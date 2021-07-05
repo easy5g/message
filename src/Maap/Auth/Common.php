@@ -67,6 +67,10 @@ trait Common
 
         $tokenData = json_decode($responseContent, true);
 
+        if ($tokenData === false) {
+            throw new TokenResponseException('Incorrect data structure');
+        }
+
         if ($tokenData['errorCode'] !== 0) {
             throw new TokenResponseException($tokenData['errorMessage'], $tokenData['errorCode']);
         }

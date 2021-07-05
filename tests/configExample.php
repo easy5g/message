@@ -14,20 +14,20 @@ return [
         'appKey' => 'appKey-CM',
         'apiVersion' => 'v1.0',
         'chatbotId' => 'sip:x@163.com',
-        'serverRoot' => 'http://81.68.104.218:8844'
+        'serverRoot' => 'http://81.68.104.218:8855'
     ],
     Const5G::CU => [
         'appId' => 'appId-CU',
         'appKey' => 'appKey-CU',
         'apiVersion' => 'v1.0',
         'chatbotId' => 'sip:x@163.com',
-        'serverRoot' => 'http://81.68.104.218:8844'
+        'serverRoot' => 'http://81.68.104.218:8855'
     ],
     Const5G::CT => [
         'appId' => 'appId-CT',
         'appKey' => 'appKey-CT',
         'apiVersion' => 'v1.0',
         'chatbotId' => 'sip:x@163.com',
-        'serverRoot' => 'http://81.68.104.218:8844'
+        'serverRoot' => 'http://81.68.104.218:8855'
     ]
 ];

@@ -14,7 +14,7 @@ class ChinaMobile extends Client
 {
     use Common;
 
-    const TOKEN_URL = 'https://%s/bot/%s/%s/accessToken';
+    const TOKEN_URL = '%s/bot/%s/%s/accessToken';
 
     protected $thirdUrl;
     protected $serviceProvider = Const5G::CM;
