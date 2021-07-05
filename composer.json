@@ -1,0 +1,34 @@
+{
+  "name": "5gsms/easy5g",
+  "description": "5g SDK",
+  "keywords": [
+    "easy5g",
+    "5gsms",
+    "sms",
+    "5gsms-sdk",
+    "sdk"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "zhouhua",
+      "email": "823842209@qq.com"
+    }
+  ],
+  "require": {
+    "illuminate/container": "^8.48.0",
+    "symfony/var-dumper": "^5.1.4",
+    "symfony/cache": "^5.3",
+    "guzzlehttp/guzzle": "^7.0",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Easy5G\\": "src/",
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
+}
