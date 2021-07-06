@@ -10,8 +10,8 @@ use Easy5G\Kernel\Support\Const5G;
 return [
     //三个运营商至少必须填一个
     Const5G::CM => [
-        'appId' => 'appId-CM',
-        'appKey' => 'appKey-CM',
+        'cspToken' => 'ff556388699c84a4ae73bc719eda6480c0d8290c575f297d7f65dad8f9c6804f',
+        'cspid' => 'test12345',
         'apiVersion' => 'v1.0',
         'chatbotId' => 'sip:x@163.com',
         'serverRoot' => 'http://81.68.104.218:8855'

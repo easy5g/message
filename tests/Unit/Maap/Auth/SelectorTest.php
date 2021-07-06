@@ -26,7 +26,10 @@ class SelectorTest extends TestCase
 
     public function testGetToken()
     {
-        $config = [Const5G::CT => $GLOBALS['config'][Const5G::CT]];
+        $config = [
+            Const5G::CT => $GLOBALS['config'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config'][Const5G::CM]
+        ];
 
         $app = Factory::Maap($config, false);
 
@@ -43,6 +46,10 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame($mockData['accessToken'], $app->access_token->getToken());
+        $this->assertSame($mockData['accessToken'], $app->access_token->getToken(true, Const5G::CT));
+
+        $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['cspid'] . ':' . hash('sha256', $config[Const5G::CM]['cspToken'] . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
+
+        $this->assertSame($exceptAccessToken, $app->access_token->getToken(true, Const5G::CM));
     }
 }

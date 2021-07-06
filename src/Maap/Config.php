@@ -16,8 +16,8 @@ class Config extends Repository
 {
     public $spBaseConfigField = [
         Const5G::CM => [
-            'appId' => 'string',
-            'appKey' => 'string',
+            'cspid' => 'string',
+            'cspToken' => 'string',
             'serverRoot' => 'string',
             'apiVersion' => 'string',
             'chatbotId' => 'string'
