@@ -31,7 +31,7 @@ class ApcuCacheTest extends TestCase
             ]
         ];
 
-        $app = Factory::Maap($config);
+        $app = Factory::Maap($config,false);
 
         self::$cache = $app->cache;
     }

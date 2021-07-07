@@ -20,6 +20,11 @@ class LogManager
         $this->app = $app;
     }
 
+    public function confirmDrive()
+    {
+
+    }
+
     public function debug($message, array $context = [])
     {
         return true;

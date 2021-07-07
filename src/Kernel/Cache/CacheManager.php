@@ -36,21 +36,17 @@ class CacheManager implements CacheInterface
     /**
      * CacheManager constructor.
      * @param App $app
-     * @throws InvalidConfigException
      */
     public function __construct(App $app)
     {
         $this->app = $app;
-
-        $this->confirmDrive();
     }
 
     /**
-     * confirmDrive
-     * @return mixed
+     * resolve
      * @throws InvalidConfigException
      */
-    protected function confirmDrive()
+    protected function resolve()
     {
         $config = $this->app->config;
 
@@ -64,7 +60,9 @@ class CacheManager implements CacheInterface
 
         if (method_exists($this, $driverMethod)) {
             try {
-                return $this->{$driverMethod}($cacheConfig);
+                $this->{$driverMethod}($cacheConfig);
+
+                return $this->cacheDriver;
             } catch (Exception $e) {
                 throw new InvalidConfigException($e->getMessage());
             }
@@ -172,10 +170,11 @@ class CacheManager implements CacheInterface
     /**
      * driver
      * @return AbstractAdapter
+     * @throws InvalidConfigException
      */
     public function driver()
     {
-        return $this->cacheDriver;
+        return $this->cacheDriver ?? $this->resolve();
     }
 
     /**
@@ -208,9 +207,11 @@ class CacheManager implements CacheInterface
             $this->del($key);
 
             return $this->set(...func_get_args());
+        } catch (InvalidConfigException $e) {
         } catch (InvalidArgumentException $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -224,9 +225,11 @@ class CacheManager implements CacheInterface
             return $this->driver()->get($key, function () {
                 return null;
             });
+        } catch (InvalidConfigException $e) {
         } catch (InvalidArgumentException $e) {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -238,8 +241,10 @@ class CacheManager implements CacheInterface
     {
         try {
             return $this->driver()->delete($key);
+        } catch (InvalidConfigException $e) {
         } catch (InvalidArgumentException $e) {
-            return false;
         }
+
+        return false;
     }
 }
