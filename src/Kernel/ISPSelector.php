@@ -10,17 +10,15 @@ namespace Easy5G\Kernel;
 
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Maap\Auth\Client;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 abstract class ISPSelector
 {
-    /** @var App */
     public $app;
 
     protected $defaultISP;
 
-    public function __construct(Container $app)
+    public function __construct(App $app)
     {
         $this->app = $app;
     }

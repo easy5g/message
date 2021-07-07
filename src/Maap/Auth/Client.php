@@ -8,17 +8,15 @@
 namespace Easy5G\Maap\Auth;
 
 
-use Easy5G\Maap\Application;
-use Illuminate\Container\Container;
+use Easy5G\Kernel\App;
 
 abstract class Client
 {
     const TOKEN_PREFIX = 'easy5g.access_token.';
 
-    /** @var Application */
     public $app;
 
-    public function __construct(Container $app)
+    public function __construct(App $app)
     {
         $this->app = $app;
     }

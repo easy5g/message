@@ -8,17 +8,14 @@
 namespace Easy5G\Kernel;
 
 
-use Easy5G\Kernel\Cache\ApcuCache;
-use Easy5G\Kernel\Cache\FileCache;
-use GuzzleHttp\Client;
-use Symfony\Component\Cache\Adapter\ApcuAdapter;
+use Easy5G\Kernel\Cache\CacheManager;
+use Unit\Kernel\Log\LogManager;
 
 class ServiceProvider
 {
-    /** @var App */
     protected $app;
 
-    public function __construct($app)
+    public function __construct(App $app)
     {
         $this->app = $app;
 
@@ -27,15 +24,11 @@ class ServiceProvider
 
     public function registerBaseService()
     {
-        if (ApcuAdapter::isSupported()) {
-            $this->app->singletonIf('cache', ApcuCache::class);
-            $this->app->singletonIf(Contracts\CacheInterface::class, ApcuCache::class);
-        } else {
-            $this->app->singletonIf('cache', FileCache::class);
-            $this->app->singletonIf(Contracts\CacheInterface::class, FileCache::class);
-        }
+        $this->app->singletonIf(Contracts\CacheInterface::class, CacheManager::class);
+        $this->app->alias(Contracts\CacheInterface::class, 'cache');
 
-        $this->app->singletonIf(Client::class);
         $this->app->singletonIf('httpClient',HttpClient::class);
+        $this->app->singletonIf('logger',LogManager::class);
     }
+
 }

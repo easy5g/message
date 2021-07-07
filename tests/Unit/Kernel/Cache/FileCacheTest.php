@@ -8,8 +8,10 @@
 namespace Unit\Kernel\Cache;
 
 
-use Easy5G\Kernel\Cache\FileCache;
+use Easy5G\Factory;
+use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class FileCacheTest extends TestCase
 {
@@ -17,12 +19,19 @@ class FileCacheTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        self::$cache = new FileCache();
+        $app = Factory::Maap([Const5G::CU => $GLOBALS['config'][Const5G::CU]]);
+
+        self::$cache = $app->cache;
     }
 
     public static function tearDownAfterClass(): void
     {
         self::$cache = null;
+    }
+
+    public function testClass()
+    {
+        $this->assertInstanceOf(FilesystemAdapter::class,self::$cache->driver());
     }
 
     public function testSet()

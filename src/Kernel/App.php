@@ -7,7 +7,7 @@
 
 namespace Easy5G\Kernel;
 
-use Easy5G\Kernel\Cache\CacheAbstract;
+use Easy5G\Kernel\Cache\CacheManager;
 use Easy5G\Kernel\Config\Repository;
 use Illuminate\Container\Container;
 
@@ -17,7 +17,7 @@ use Illuminate\Container\Container;
  *
  * @property Repository $config
  * @property $this $app
- * @property CacheAbstract $cache
+ * @property CacheManager $cache
  * @property HttpClient $httpClient
  */
 abstract class App extends Container
@@ -45,6 +45,6 @@ abstract class App extends Container
 
         $this->instance('app', $this);
 
-        $this->instance(Container::class, $this);
+        $this->instance(self::class, $this);
     }
 }
