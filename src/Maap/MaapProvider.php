@@ -9,10 +9,11 @@ namespace Easy5G\Maap;
 
 
 use Easy5G\Kernel\ServiceProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 class MaapProvider extends ServiceProvider
 {
-    public $bindings = [
+    public $singletons = [
         'base' => Base\Selector::class,
         'access_token' => Auth\Selector::class
     ];
@@ -22,10 +23,14 @@ class MaapProvider extends ServiceProvider
      */
     public function register()
     {
-        foreach ($this->bindings as $abstract => $bind) {
-            $this->app->singletonIf($abstract, function ($app) use ($bind) {
-                return (new $bind($app))->register();
+        foreach ($this->singletons as $abstract => $singleton) {
+            $this->app->singletonIf($abstract, function ($app) use ($singleton) {
+                return (new $singleton($app))->register();
             });
         }
+
+        $this->app->bind('request',function () {
+            return Request::createFromGlobals();
+        });
     }
 }

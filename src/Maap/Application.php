@@ -10,6 +10,7 @@ namespace Easy5G\Maap;
 use Easy5G\Kernel\App;
 use Easy5G\Kernel\Contracts\ConfigInterface;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Application
@@ -17,6 +18,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
  *
  * @property Base\Selector base
  * @property Auth\Selector access_token
+ * @property Request request
  */
 class Application extends App
 {

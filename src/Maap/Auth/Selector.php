@@ -12,6 +12,7 @@ use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Symfony\Component\HttpFoundation\Response;
 
 class Selector extends ISPSelector
 {
@@ -27,20 +28,36 @@ class Selector extends ISPSelector
      * @param null $ISP
      * @param null $url
      * @return string
-     * @throws BindingResolutionException
-     * @throws InvalidISPException
+     * @throws BindingResolutionException|InvalidISPException
      */
     public function getToken($refresh = false, $ISP = null, $url = null)
     {
-        $className = $this->getServiceName($ISP);
-
         /** @var Client $client */
-        $client = $this->app->make($className);
+        $client = $this->getClient($ISP);
 
         if ($url) {
             $client->setThirdUrl($url);
         }
 
         return $client->getToken($refresh);
+    }
+
+    /**
+     * notify
+     * @param callable|null $callBack
+     * @param null $ISP
+     * @return Response
+     * @throws BindingResolutionException|InvalidISPException
+     */
+    public function notify(?callable $callBack = null, $ISP = null)
+    {
+        /** @var Common $client */
+        $client = $this->getClient($ISP);
+
+        if ($client instanceof ChinaMobile) {
+            throw new InvalidISPException('China Mobile does not need a access token callback');
+        }
+
+        return $client->notify($callBack);
     }
 }

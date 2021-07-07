@@ -11,6 +11,7 @@ namespace Easy5G\Maap\Auth;
 use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\Exceptions\TokenResponseException;
 use Easy5G\Maap\Application;
+use Symfony\Component\HttpFoundation\Response;
 
 trait Common
 {
@@ -49,8 +50,7 @@ trait Common
     /**
      * requestToken
      * @return array
-     * @throws TokenResponseException
-     * @throws BadRequestException
+     * @throws TokenResponseException|BadRequestException
      */
     protected function requestToken(): array
     {
@@ -76,5 +76,52 @@ trait Common
         }
 
         return [$tokenData['accessToken'], $tokenData['expires']];
+    }
+
+    /**
+     * notify 进行access_token回调验证，在基础验证通过的情况下，可根据用户传入的回调函数来确认最终给服务器返回的是通过还是失败
+     * @param callable $callback
+     * @return Response
+     */
+    public function notify(?callable $callback = null)
+    {
+        /** @var Application $app */
+        $app = $this->app;
+
+        $config = $app->config->get($this->serviceProvider);
+
+        $queryData = $app->request->query->all();
+
+        $verifyRes = $this->verify($queryData, $app->access_token->getToken());
+
+        if ($verifyRes && !is_null($callback)) {
+            $res = $verifyRes & call_user_func($callback, $queryData);
+        } else {
+            $res = $verifyRes;
+        }
+
+        return new Response('', 200, [
+            'echoStr' => $res ? $queryData['echoStr'] : '',
+            'appId' => $res ? $config['appId'] : '',
+        ]);
+    }
+
+    /**
+     * verify 对服务器的请求进行验证
+     * @param $queryData
+     * @param $accessToken
+     * @return bool
+     */
+    protected function verify($queryData, $accessToken)
+    {
+        $signature = $queryData['signature'];
+
+        unset($queryData['signature'], $queryData['echoStr']);
+
+        $queryData['token'] = $accessToken;
+
+        sort($queryData, SORT_STRING);
+
+        return hash('sha256', implode('', $queryData)) === $signature;
     }
 }

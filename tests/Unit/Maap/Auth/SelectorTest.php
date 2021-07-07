@@ -12,6 +12,7 @@ use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class SelectorTest extends TestCase
 {
@@ -21,7 +22,7 @@ class SelectorTest extends TestCase
 
         $config = [Const5G::CT => $GLOBALS['config'][Const5G::CT]];
 
-        Factory::Maap($config)->access_token->getToken(true, null, 'http://127.0.0.1:9999/test');
+        Factory::Maap($config, false)->access_token->getToken(true, null, 'http://127.0.0.1:9999/test');
     }
 
     public function testGetToken()
@@ -51,5 +52,44 @@ class SelectorTest extends TestCase
         $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['cspid'] . ':' . hash('sha256', $config[Const5G::CM]['cspToken'] . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
 
         $this->assertSame($exceptAccessToken, $app->access_token->getToken(true, Const5G::CM));
+    }
+
+    public function testNotify()
+    {
+        $config = [
+            Const5G::CT => $GLOBALS['config'][Const5G::CT],
+        ];
+
+        $app = Factory::Maap($config, false);
+
+        $queryData = [
+            'token' => $app->access_token->getToken(),
+            'timestamp' => time(),
+            'nonce' => uniqid(),
+        ];
+
+        $_GET = [
+            'timestamp' => $queryData['timestamp'],
+            'nonce' => $queryData['nonce'],
+            'echoStr' => 'test',
+        ];
+
+        sort($queryData, SORT_STRING);
+
+        $_GET['signature'] = hash('sha256', implode('', $queryData));
+
+        $response = $app->access_token->notify();
+
+        $this->assertInstanceOf(Response::class, $response);
+
+        $this->assertSame($_GET['echoStr'], $response->headers->get('echoStr'));
+
+        $response = $app->access_token->notify(function ($receiveData){
+            return false;
+        });
+
+        $this->assertInstanceOf(Response::class, $response);
+
+        $this->assertSame('', $response->headers->get('echoStr'));
     }
 }
