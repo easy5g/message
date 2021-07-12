@@ -15,8 +15,6 @@ abstract class ISPSelector
 {
     public $app;
 
-    protected $defaultISP;
-
     public function __construct(App $app)
     {
         $this->app = $app;
@@ -43,7 +41,7 @@ abstract class ISPSelector
             }
         }
 
-        $this->defaultISP = $ISP;
+        $this->app->defaultISP = $ISP;
     }
 
     /**
@@ -51,17 +49,17 @@ abstract class ISPSelector
      * @return int
      * @throws InvalidISPException
      */
-    public function getDefaultISP()
+    public function getDefaultISP(?string $ISP = null)
     {
-        if (!isset($this->defaultISP)) {
-            $this->setDefaultISP();
+        if (!isset($this->app->defaultISP) || ($ISP && $this->app->defaultISP !== $ISP)) {
+            $this->setDefaultISP($ISP);
         }
 
-        return $this->defaultISP;
+        return $this->app->defaultISP;
     }
 
     /**
-     * getServiceName 更具ISP获取相应的服务名
+     * getServiceName 根据ISP获取相应的服务名
      * @param $ISP
      * @return mixed
      * @throws InvalidISPException
@@ -69,7 +67,7 @@ abstract class ISPSelector
     public function getServiceName($ISP = null)
     {
         if (
-            (empty($ISP) && empty($ISP = $this->getDefaultISP()))
+            empty($ISP = $this->getDefaultISP($ISP))
             || !isset($this->serviceMap[$ISP])
         ) {
             throw new InvalidISPException('Illegal ISP');

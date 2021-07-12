@@ -31,7 +31,7 @@ class Selector extends ISPSelector
      */
     public function list(?string $ISP = null, ?string $url = null)
     {
-        $ISP = $ISP ?? $this->getDefaultISP();
+        $ISP = $this->getDefaultISP($ISP);
 
         /** @var Application $app */
         $app = $this->app;
@@ -54,7 +54,7 @@ class Selector extends ISPSelector
      */
     public function current(?string $ISP = null, ?string $url = null)
     {
-        $ISP = $ISP ?? $this->getDefaultISP();
+        $ISP = $this->getDefaultISP($ISP);
 
         /** @var Application $app */
         $app = $this->app;
@@ -74,6 +74,7 @@ class Selector extends ISPSelector
      * @param string|null $ISP
      * @param string|null $url
      * @return bool
+     * @throws BindingResolutionException|InvalidISPException
      */
     public function create($buttons, ?string $ISP = null, ?string $url = null)
     {
@@ -85,7 +86,7 @@ class Selector extends ISPSelector
         }
 
         if ($url) {
-            $client->setThirdUrl($url,'thirdCreateUrl');
+            $client->setThirdUrl($url, 'thirdCreateUrl');
         }
 
         /** @var Common $client */

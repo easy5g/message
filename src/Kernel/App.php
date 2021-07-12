@@ -24,6 +24,8 @@ use Unit\Kernel\Log\LogManager;
  */
 abstract class App extends Container
 {
+    public $defaultISP;
+
     public function __construct()
     {
         $this->registerBaseBindings();
