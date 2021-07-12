@@ -18,6 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @property Base\Selector base
  * @property Auth\Selector access_token
+ * @property Server\Selector server
+ * @property Chatbot\Selector chatbot
+ * @property Chatbot\Selector menu
  * @property Request request
  */
 class Application extends App

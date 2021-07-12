@@ -28,7 +28,7 @@ class ServiceProvider
         $this->app->alias(Contracts\CacheInterface::class, 'cache');
 
         $this->app->singletonIf('httpClient',HttpClient::class);
-        $this->app->singletonIf('logger',LogManager::class);
+        $this->app->singletonIf('log',LogManager::class);
     }
 
 }

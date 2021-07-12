@@ -14,6 +14,10 @@ use Easy5G\Kernel\Support\Const5G;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class Selector
+ * @package Easy5G\Maap\Auth
+ */
 class Selector extends ISPSelector
 {
     public $serviceMap = [
@@ -25,12 +29,12 @@ class Selector extends ISPSelector
     /**
      * getToken
      * @param bool $refresh
-     * @param null $ISP
-     * @param null $url
+     * @param string|null $ISP
+     * @param string|null $url
      * @return string
      * @throws BindingResolutionException|InvalidISPException
      */
-    public function getToken($refresh = false, $ISP = null, $url = null)
+    public function getToken(?bool $refresh = false, ?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
@@ -45,11 +49,11 @@ class Selector extends ISPSelector
     /**
      * notify
      * @param callable|null $callBack
-     * @param null $ISP
+     * @param string|null $ISP
      * @return Response
      * @throws BindingResolutionException|InvalidISPException
      */
-    public function notify(?callable $callBack = null, $ISP = null)
+    public function notify(?callable $callBack = null, ?string $ISP = null)
     {
         /** @var Common $client */
         $client = $this->getClient($ISP);

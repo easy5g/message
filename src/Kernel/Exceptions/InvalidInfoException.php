@@ -10,7 +10,7 @@ namespace Easy5G\Kernel\Exceptions;
 
 use RuntimeException;
 
-class TokenResponseException extends RuntimeException
+class InvalidInfoException extends RuntimeException
 {
 
 }

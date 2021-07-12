@@ -8,20 +8,28 @@
 namespace Easy5G\Kernel;
 
 
+use Easy5G\Kernel\Contracts\HttpClientInterface;
 use Easy5G\Kernel\Exceptions\BadRequestException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
-class HttpClient
+class HttpClient implements HttpClientInterface
 {
     /** @var Client */
     protected $client;
 
-    public function __construct(Client $client)
+    /**
+     * getClient
+     * @return Client
+     */
+    public function getClient()
     {
-        $this->client = $client;
-    }
+        if (!isset($this->client)) {
+            $this->client = new Client();
+        }
 
+        return $this->client;
+    }
 
     /**
      * post
@@ -35,7 +43,7 @@ class HttpClient
         $options['timeout'] = 2;
 
         try {
-            $response = $this->client->request('POST', $url, $options);
+            $response = $this->getClient()->request('POST', $url, $options);
         } catch (GuzzleException $e) {
             throw new BadRequestException($e->getMessage());
         }
@@ -61,7 +69,7 @@ class HttpClient
         $options['timeout'] = 2;
 
         try {
-            $response = $this->client->request('GET', $url, $options);
+            $response = $this->getClient()->request('GET', $url, $options);
         } catch (GuzzleException $e) {
             throw new BadRequestException($e->getMessage());
         }

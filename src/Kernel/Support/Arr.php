@@ -13,9 +13,8 @@ use ArrayAccess;
 class Arr
 {
     /**
-     * Determine whether the given value is array accessible.
-     *
-     * @param mixed $value
+     * accessible
+     * @param $value
      * @return bool
      */
     public static function accessible($value)
@@ -24,10 +23,9 @@ class Arr
     }
 
     /**
-     * Determine if the given key exists in the provided array.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|int $key
+     * exists
+     * @param $array
+     * @param $key
      * @return bool
      */
     public static function exists($array, $key)
@@ -40,10 +38,9 @@ class Arr
     }
 
     /**
-     * Check if an item or items exist in an array using "dot" notation.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|array $keys
+     * has
+     * @param $array
+     * @param $keys
      * @return bool
      */
     public static function has($array, $keys)
@@ -74,12 +71,11 @@ class Arr
     }
 
     /**
-     * Get an item from an array using "dot" notation.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|int|null $key
-     * @param mixed $default
-     * @return mixed
+     * get
+     * @param $array
+     * @param $key
+     * @param null $default
+     * @return mixed|null
      */
     public static function get($array, $key, $default = null)
     {
@@ -111,14 +107,11 @@ class Arr
     }
 
     /**
-     * Set an array item to a given value using "dot" notation.
-     *
-     * If no key is given to the method, the entire array will be replaced.
-     *
-     * @param array $array
-     * @param string|null $key
-     * @param mixed $value
-     * @return array
+     * set
+     * @param $array
+     * @param $key
+     * @param $value
+     * @return array|mixed
      */
     public static function set(&$array, $key, $value)
     {
@@ -148,5 +141,60 @@ class Arr
         $array[array_shift($keys)] = $value;
 
         return $array;
+    }
+
+    /**
+     * except
+     * @param array $array
+     * @param $keys
+     * @return array
+     */
+    public static function except(array $array, $keys)
+    {
+        static::forget($array, $keys);
+
+        return $array;
+    }
+
+    /**
+     * forget
+     * @param array $array
+     * @param $keys
+     */
+    public static function forget(array &$array, $keys)
+    {
+        $original = &$array;
+
+        $keys = (array) $keys;
+
+        if (0 === count($keys)) {
+            return;
+        }
+
+        foreach ($keys as $key) {
+            // if the exact key exists in the top-level, remove it
+            if (static::exists($array, $key)) {
+                unset($array[$key]);
+
+                continue;
+            }
+
+            $parts = explode('.', $key);
+
+            // clean up before each pass
+            $array = &$original;
+
+            while (count($parts) > 1) {
+                $part = array_shift($parts);
+
+                if (isset($array[$part]) && is_array($array[$part])) {
+                    $array = &$array[$part];
+                } else {
+                    continue 2;
+                }
+            }
+
+            unset($array[array_shift($parts)]);
+        }
     }
 }

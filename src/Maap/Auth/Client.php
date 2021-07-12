@@ -8,18 +8,11 @@
 namespace Easy5G\Maap\Auth;
 
 
-use Easy5G\Kernel\App;
+use Easy5G\Kernel\BaseClient;
 
-abstract class Client
+abstract class Client extends BaseClient
 {
     const TOKEN_PREFIX = 'easy5g.access_token.';
-
-    public $app;
-
-    public function __construct(App $app)
-    {
-        $this->app = $app;
-    }
 
     /**
      * getCredentials 获取认证字段
@@ -32,15 +25,6 @@ abstract class Client
      * @return array
      */
     abstract protected function requestToken(): array;
-
-    /**
-     * setThirdUrl 设置非官方的url
-     * @param $url
-     */
-    public function setThirdUrl($url)
-    {
-        $this->thirdUrl = $url;
-    }
 
     /**
      * getToken

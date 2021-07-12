@@ -9,8 +9,10 @@ namespace Easy5G\Maap\Auth;
 
 
 use Easy5G\Kernel\Exceptions\BadRequestException;
-use Easy5G\Kernel\Exceptions\TokenResponseException;
+use Easy5G\Kernel\Exceptions\InvalidISPException;
+use Easy5G\Kernel\Exceptions\BadResponseException;
 use Easy5G\Maap\Application;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\HttpFoundation\Response;
 
 trait Common
@@ -50,7 +52,7 @@ trait Common
     /**
      * requestToken
      * @return array
-     * @throws TokenResponseException|BadRequestException
+     * @throws BadResponseException|BadRequestException
      */
     protected function requestToken(): array
     {
@@ -67,12 +69,12 @@ trait Common
 
         $tokenData = json_decode($responseContent, true);
 
-        if ($tokenData === false) {
-            throw new TokenResponseException('Incorrect data structure');
+        if (empty($tokenData)) {
+            throw new BadResponseException('Incorrect data structure');
         }
 
         if ($tokenData['errorCode'] !== 0) {
-            throw new TokenResponseException($tokenData['errorMessage'], $tokenData['errorCode']);
+            throw new BadResponseException($tokenData['errorMessage'], $tokenData['errorCode']);
         }
 
         return [$tokenData['accessToken'], $tokenData['expires']];
@@ -82,6 +84,7 @@ trait Common
      * notify 进行access_token回调验证，在基础验证通过的情况下，可根据用户传入的回调函数来确认最终给服务器返回的是通过还是失败
      * @param callable $callback
      * @return Response
+     * @throws BindingResolutionException|InvalidISPException
      */
     public function notify(?callable $callback = null)
     {

@@ -15,7 +15,9 @@ class MaapProvider extends ServiceProvider
 {
     public $singletons = [
         'base' => Base\Selector::class,
-        'access_token' => Auth\Selector::class
+        'access_token' => Auth\Selector::class,
+        'server' => Auth\Selector::class,
+        'chatbot' => Chatbot\Selector::class,
     ];
 
     /**

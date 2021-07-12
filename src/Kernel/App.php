@@ -10,6 +10,7 @@ namespace Easy5G\Kernel;
 use Easy5G\Kernel\Cache\CacheManager;
 use Easy5G\Kernel\Config\Repository;
 use Illuminate\Container\Container;
+use Unit\Kernel\Log\LogManager;
 
 /**
  * Class App
@@ -19,6 +20,7 @@ use Illuminate\Container\Container;
  * @property $this $app
  * @property CacheManager $cache
  * @property HttpClient $httpClient
+ * @property LogManager $log
  */
 abstract class App extends Container
 {
@@ -43,8 +45,8 @@ abstract class App extends Container
     {
         static::setInstance($this);
 
-        $this->instance('app', $this);
-
         $this->instance(self::class, $this);
+
+        $this->alias(self::class,'app');
     }
 }
