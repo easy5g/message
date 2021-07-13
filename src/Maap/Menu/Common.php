@@ -39,16 +39,17 @@ trait Common
      */
     public function create($buttons)
     {
-        if (json_decode($buttons, true) === false) {
+        $buttonsArr = json_decode($buttons, true);
+
+        if (empty($buttonsArr) && $buttonsArr !== []) {
             throw new BadRequestException('Incorrect data structure,buttons must be json');
         }
 
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->get($this->getCreateUrl(), [
+        $responseContent = $app->httpClient->post($this->getCreateUrl(), [
             'json' => $buttons,
-
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),
                 'Content-Type' => 'application/json',

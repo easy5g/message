@@ -18,6 +18,7 @@ class MaapProvider extends ServiceProvider
         'access_token' => Auth\Selector::class,
         'server' => Auth\Selector::class,
         'chatbot' => Chatbot\Selector::class,
+        'menu' => Menu\Selector::class,
     ];
 
     /**

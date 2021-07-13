@@ -36,7 +36,7 @@ class Selector extends ISPSelector
         /** @var Application $app */
         $app = $this->app;
 
-        if ($ISP !== Const5G::CM) {
+        if ($ISP === Const5G::CM) {
             throw new InvalidISPException('China Mobile does not support this method:' . explode('::', __METHOD__)[1]);
         } else {
             $menu = $app->chatbot->info($ISP, $url)->getMenu();
@@ -59,7 +59,7 @@ class Selector extends ISPSelector
         /** @var Application $app */
         $app = $this->app;
 
-        if ($ISP !== Const5G::CM) {
+        if ($ISP === Const5G::CM) {
             throw new InvalidISPException('China Mobile does not support this method:' . explode('::', __METHOD__)[1]);
         } else {
             $menu = $app->chatbot->info($ISP, $url)->getMenu();
