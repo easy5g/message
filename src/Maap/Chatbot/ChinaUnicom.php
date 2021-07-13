@@ -14,11 +14,8 @@ class ChinaUnicom extends Client
 {
     use Common;
 
-    const UPDATE_URL = '%s/bot/%s/%s/update/chatBotInfo/optionals';
-    const QUERY_URL = '%s/bot/%s/%s/find/chatBotInfo';
-
-    protected $thirdUpdateUrl;
-    protected $thirdQueryUrl;
+    protected $queryUrl = '%s/bot/%s/%s/find/chatBotInfo';
+    protected $updateUrl = '%s/bot/%s/%s/update/chatBotInfo/optionals';
 
     protected $serviceProvider = Const5G::CU;
 }

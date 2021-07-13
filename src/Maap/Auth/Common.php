@@ -32,24 +32,6 @@ trait Common
     }
 
     /**
-     * getRequestTokenUrl 获取请求地址
-     * @return string
-     */
-    protected function getRequestTokenUrl()
-    {
-        if (isset($this->thirdUrl)) {
-            return $this->thirdUrl;
-        }
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        $config = $app->config->get($this->serviceProvider);
-
-        return sprintf(static::TOKEN_URL, $config['url'], $config['apiVersion'], $config['chatbotId']);
-    }
-
-    /**
      * requestToken
      * @return array
      * @throws BadResponseException|BadRequestException
@@ -59,7 +41,7 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->post($this->getRequestTokenUrl(), [
+        $responseContent = $app->httpClient->post($this->getCurrentUrl('token'), [
             'json' => $this->getCredentials(),
             'headers' => [
                 'Accept' => 'application/json',

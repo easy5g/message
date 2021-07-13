@@ -18,42 +18,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 trait Common
 {
     /**
-     * getInfoUrl 获取请求地址
-     * @return string
-     */
-    protected function getInfoUrl()
-    {
-        if (isset($this->thirdQueryUrl)) {
-            return $this->thirdQueryUrl;
-        }
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        $config = $app->config->get($this->serviceProvider);
-
-        return sprintf(static::QUERY_URL, $config['url'], $config['apiVersion'], $config['chatbotId']);
-    }
-
-    /**
-     * getUpdateInfoUrl 获取请求地址
-     * @return string
-     */
-    protected function getUpdateInfoUrl()
-    {
-        if (isset($this->thirdUpdateUrl)) {
-            return $this->thirdUpdateUrl;
-        }
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        $config = $app->config->get($this->serviceProvider);
-
-        return sprintf(static::UPDATE_URL, $config['url'], $config['apiVersion'], $config['chatbotId']);
-    }
-
-    /**
      * info
      * @return Info
      * @throws BindingResolutionException|InvalidISPException
@@ -63,7 +27,7 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->get($this->getInfoUrl(), [
+        $responseContent = $app->httpClient->get($this->getCurrentUrl('query'), [
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),
                 'Accept' => 'application/json',
@@ -101,7 +65,7 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->post($this->getUpdateInfoUrl(), [
+        $responseContent = $app->httpClient->post($this->getCurrentUrl('update'), [
             'json' => $info->toJson(),
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),

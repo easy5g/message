@@ -35,7 +35,7 @@ class SelectorTest extends TestCase
         $stub = $this->createMock(HttpClient::class);
 
         $stub->method('post')->willReturn(json_encode($mockData))->with(
-            $this->anything(),
+            $this->stringContains('optionals'),
             $this->callback(function ($options) use ($updateInfo) {
                 return json_encode($updateInfo) === $options['json'];
             })

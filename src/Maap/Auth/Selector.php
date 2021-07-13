@@ -40,7 +40,7 @@ class Selector extends ISPSelector
         $client = $this->getClient($ISP);
 
         if ($url) {
-            $client->setThirdUrl($url);
+            $client->setThirdUrl($url,'token');
         }
 
         return $client->getToken($refresh);

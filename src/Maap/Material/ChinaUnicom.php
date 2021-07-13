@@ -5,7 +5,7 @@
  * Time: 11:45 上午
  */
 
-namespace Easy5G\Maap\Menu;
+namespace Easy5G\Maap\Material;
 
 
 use Easy5G\Kernel\Support\Const5G;
@@ -14,6 +14,6 @@ class ChinaUnicom extends Client
 {
     use Common;
 
-    protected $thirdCreateUrl = '%s/bot/%s/%s/update/chatBotInfo/menu';
+    protected $uploadUrl = '%s/bot/%s/%s/medias/upload';
     protected $serviceProvider = Const5G::CU;
 }

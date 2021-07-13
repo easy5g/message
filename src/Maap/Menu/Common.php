@@ -10,32 +10,17 @@ namespace Easy5G\Maap\Menu;
 
 use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\Exceptions\BadResponseException;
+use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Maap\Application;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 trait Common
 {
     /**
-     * getCreateUrl
-     * @return string
-     */
-    protected function getCreateUrl()
-    {
-        if (isset($this->thirdCreateUrl)) {
-            return $this->thirdCreateUrl;
-        }
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        $config = $app->config->get($this->serviceProvider);
-
-        return sprintf(static::CREATE_URL, $config['url'], $config['apiVersion'], $config['chatbotId']);
-    }
-
-    /**
      * create
      * @param $buttons
      * @return bool
+     * @throws BindingResolutionException|InvalidISPException
      */
     public function create($buttons)
     {
@@ -48,7 +33,7 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->post($this->getCreateUrl(), [
+        $responseContent = $app->httpClient->post($this->getCurrentUrl('create'), [
             'json' => $buttons,
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),

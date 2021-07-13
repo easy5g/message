@@ -86,7 +86,7 @@ class Selector extends ISPSelector
         }
 
         if ($url) {
-            $client->setThirdUrl($url, 'thirdCreateUrl');
+            $client->setThirdUrl($url, 'create');
         }
 
         /** @var Common $client */

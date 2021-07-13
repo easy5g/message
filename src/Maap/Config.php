@@ -19,8 +19,6 @@ class Config extends Repository
             'cspid' => 'string',
             'cspToken' => 'string',
             'serverRoot' => 'string',
-            'apiVersion' => 'string',
-            'chatbotId' => 'string'
         ],
         Const5G::CU => [
             'appId' => 'string',

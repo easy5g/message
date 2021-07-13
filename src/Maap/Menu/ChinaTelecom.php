@@ -14,8 +14,6 @@ class ChinaTelecom extends Client
 {
     use Common;
 
-    const CREATE_URL = '%s/bot/%s/%s/update/chatBotInfo/menu';
-
-    protected $thirdCreateUrl;
+    protected $thirdCreateUrl = '%s/bot/%s/%s/update/chatBotInfo/menu';
     protected $serviceProvider = Const5G::CT;
 }

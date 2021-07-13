@@ -5,7 +5,7 @@
  * Time: 10:02 上午
  */
 
-namespace Easy5G\Maap\Chatbot;
+namespace Easy5G\Maap\Material;
 
 
 use Easy5G\Kernel\Support\Const5G;
@@ -14,8 +14,6 @@ class ChinaTelecom extends Client
 {
     use Common;
 
-    protected $queryUrl = '%s/bot/%s/%s/find/chatBotInfo';
-    protected $updateUrl = '%s/bot/%s/%s/update/chatBotInfo/optionals';
-
+    protected $uploadUrl = '%s/bot/%s/%s/medias/upload';
     protected $serviceProvider = Const5G::CT;
 }

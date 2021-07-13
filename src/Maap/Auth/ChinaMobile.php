@@ -14,7 +14,6 @@ class ChinaMobile extends Client
 {
     const TOKEN_EXPIRE_TIME = 7200;
 
-    protected $thirdUrl;
     protected $serviceProvider = Const5G::CM;
 
     /**
