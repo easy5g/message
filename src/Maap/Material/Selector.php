@@ -8,8 +8,13 @@
 namespace Easy5G\Maap\Material;
 
 
+use Easy5G\Kernel\Exceptions\CommonException;
+use Easy5G\Kernel\Exceptions\InvalidConfigException;
+use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Symfony\Component\HttpFoundation\Response;
 
 class Selector extends ISPSelector
 {
@@ -19,35 +24,127 @@ class Selector extends ISPSelector
         Const5G::CT => ChinaTelecom::class,
     ];
 
-    public function uploadImage(string $path, ?string $ISP = null, ?string $url = null)
+    /**
+     * uploadImage
+     * @param string $path
+     * @param string|null $thumbnailPath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return string
+     * @throws BindingResolutionException|InvalidISPException|InvalidConfigException
+     */
+    public function uploadImage(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
     {
         return $this->upload(...func_get_args());
     }
 
-    public function uploadVoice(string $path, ?string $ISP = null, ?string $url = null)
+    /**
+     * uploadVoice
+     * @param string $path
+     * @param string|null $thumbnailPath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return string
+     * @throws BindingResolutionException|InvalidISPException|InvalidConfigException
+     */
+    public function uploadVoice(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
     {
         return $this->upload(...func_get_args());
     }
 
-    public function uploadVideo(string $path, ?string $ISP = null, ?string $url = null)
+    /**
+     * uploadVideo
+     * @param string $path
+     * @param string|null $thumbnailPath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return string
+     * @throws BindingResolutionException|InvalidISPException|InvalidConfigException
+     */
+    public function uploadVideo(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
     {
         return $this->upload(...func_get_args());
     }
 
-    public function uploadThumb(string $path, ?string $ISP = null, ?string $url = null)
-    {
-        return $this->upload(...func_get_args());
-    }
-
-    public function upload(string $path, ?string $ISP = null, ?string $url = null)
+    /**
+     * upload
+     * @param string $path
+     * @param string|null $thumbnailPath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return string
+     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
+     */
+    public function upload(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
 
         if ($url) {
-            $client->setThirdUrl($url,'upload');
+            $client->setThirdUrl($url, 'upload');
         }
 
-        $client->upload($path);
+        if ($client->getPeriodOfValidity() === 'temp' && $client instanceof ChinaMobile) {
+            throw new InvalidISPException('China Mobile does not support this way of Material upload');
+        }
+
+        return $client->upload($path, $thumbnailPath);
+    }
+
+    /**
+     * delete
+     * @param string $media
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return string
+     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
+     */
+    public function delete(string $media, ?string $ISP = null, ?string $url = null)
+    {
+        /** @var Client $client */
+        $client = $this->getClient($ISP);
+
+        if ($url) {
+            $client->setThirdUrl($url, 'delete');
+        }
+
+        return $client->delete($media);
+    }
+
+    /**
+     * download
+     * @param string $resource
+     * @param string|null $filename
+     * @param string|null $savePath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return bool|string
+     * @throws BindingResolutionException|InvalidISPException|CommonException
+     */
+    public function download(string $resource, ?string $filename = null, ?string $savePath = null, ?string $ISP = null, ?string $url = null)
+    {
+        /** @var Client $client */
+        $client = $this->getClient($ISP);
+
+        if ($url) {
+            $client->setThirdUrl($url, 'download');
+        }
+
+        return $client->download($resource, $filename, $savePath ?? '/tmp/easy5G');
+    }
+
+    /**
+     * notify
+     * @param callable|null $callback
+     * @param string|null $ISP
+     * @return Response
+     * @throws BindingResolutionException|InvalidISPException
+     */
+    public function notify(?callable $callback = null, ?string $ISP = null)
+    {
+        /** @var Client $client */
+        $client = $this->getClient($ISP);
+
+        return $client->notify($callback);
     }
 }

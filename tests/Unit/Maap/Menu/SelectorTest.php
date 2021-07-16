@@ -84,11 +84,11 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertTrue($app->menu->create($buttons,Const5G::CT));
+        $this->assertSame($mockData, $app->menu->create($buttons, Const5G::CT));
 
         $this->expectException(InvalidISPException::class);
 
-        $this->assertTrue($app->menu->create($buttons,Const5G::CM));
+        $app->menu->create($buttons, Const5G::CM);
     }
 
     public function testCreateErr()

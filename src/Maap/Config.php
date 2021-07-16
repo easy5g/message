@@ -19,6 +19,7 @@ class Config extends Repository
             'cspid' => 'string',
             'cspToken' => 'string',
             'serverRoot' => 'string',
+            'userId' => 'string',
         ],
         Const5G::CU => [
             'appId' => 'string',

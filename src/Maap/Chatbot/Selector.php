@@ -57,7 +57,7 @@ class Selector extends ISPSelector
      * @param array|Info $info
      * @param string|null $ISP
      * @param string|null $url
-     * @return bool
+     * @return string
      * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
      */
     public function updateInfo($info, ?string $ISP = null, ?string $url = null)

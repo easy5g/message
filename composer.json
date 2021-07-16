@@ -21,7 +21,11 @@
     "guzzlehttp/guzzle": "^7.0",
     "ext-json": "*",
     "symfony/http-foundation": "^2.7 || ^3.0 || ^4.0 || ^5.0",
-    "monolog/monolog": "^1.22 || ^2.0"
+    "monolog/monolog": "^1.22 || ^2.0",
+    "ext-fileinfo": "*",
+    "ext-mbstring": "*",
+    "ext-libxml": "*",
+    "ext-simplexml": "*"
   },
   "autoload": {
     "psr-4": {

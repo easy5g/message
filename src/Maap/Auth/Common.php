@@ -75,38 +75,43 @@ trait Common
 
         $config = $app->config->get($this->serviceProvider);
 
-        $queryData = $app->request->query->all();
+        $headers = [
+            'signature' => $app->request->headers->get('signature'),
+            'timestamp' => $app->request->headers->get('timestamp'),
+            'nonce' => $app->request->headers->get('nonce'),
+            'echoStr' => $app->request->headers->get('echoStr'),
+        ];
 
-        $verifyRes = $this->verify($queryData, $app->access_token->getToken());
+        $verifyRes = self::verify($headers['signature'], $headers['timestamp'], $headers['nonce'], $app->access_token->getToken());
 
         if ($verifyRes && !is_null($callback)) {
-            $res = $verifyRes & call_user_func($callback, $queryData);
+            $res = $verifyRes & call_user_func($callback, $headers);
         } else {
             $res = $verifyRes;
         }
 
         return new Response('', 200, [
-            'echoStr' => $res ? $queryData['echoStr'] : '',
+            'echoStr' => $res ? $headers['echoStr'] : '',
             'appId' => $res ? $config['appId'] : '',
         ]);
     }
 
     /**
      * verify 对服务器的请求进行验证
-     * @param $queryData
+     * @param $signature
+     * @param $timestamp
+     * @param $nonce
      * @param $accessToken
      * @return bool
      */
-    protected function verify($queryData, $accessToken)
+    public static function verify($signature, $timestamp, $nonce, $accessToken)
     {
-        $signature = $queryData['signature'];
+        $verifyData['nonce'] = $nonce;
+        $verifyData['timestamp'] = $timestamp;
+        $verifyData['token'] = $accessToken;
 
-        unset($queryData['signature'], $queryData['echoStr']);
+        sort($verifyData, SORT_STRING);
 
-        $queryData['token'] = $accessToken;
-
-        sort($queryData, SORT_STRING);
-
-        return hash('sha256', implode('', $queryData)) === $signature;
+        return hash('sha256', implode('', $verifyData)) === $signature;
     }
 }

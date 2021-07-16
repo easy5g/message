@@ -14,7 +14,8 @@ return [
         'cspid' => 'test12345',
         'apiVersion' => 'v1.0',
         'chatbotId' => 'sip:x@163.com',
-        'serverRoot' => 'http://81.68.104.218:8855'
+        'serverRoot' => 'http://81.68.104.218:8855',
+        'userId' => '123sad'
     ],
     Const5G::CU => [
         'appId' => 'appId-CU',

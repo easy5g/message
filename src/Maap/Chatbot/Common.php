@@ -51,7 +51,7 @@ trait Common
     /**
      * updateInfo
      * @param Info|array $info
-     * @return bool
+     * @return string
      * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
      */
     public function updateInfo($info)
@@ -65,7 +65,7 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $responseContent = $app->httpClient->post($this->getCurrentUrl('update'), [
+        return $app->httpClient->post($this->getCurrentUrl('update'), [
             'json' => $info->toJson(),
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),
@@ -74,13 +74,5 @@ trait Common
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ]
         ]);
-
-        $tokenData = json_decode($responseContent, true);
-
-        if (empty($tokenData)) {
-            throw new BadResponseException('Incorrect data structure');
-        }
-
-        return $tokenData['errorCode'] === 0;
     }
 }

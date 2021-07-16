@@ -43,11 +43,11 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertTrue($app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CT));
+        $this->assertSame(json_encode($mockData),$app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CT));
 
         $this->expectException(InvalidISPException::class);
 
-        $this->assertTrue($app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CM));
+        $app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CM);
     }
 
     public function testInfo()

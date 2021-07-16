@@ -68,21 +68,19 @@ class SelectorTest extends TestCase
             'nonce' => uniqid(),
         ];
 
-        $_GET = [
-            'timestamp' => $queryData['timestamp'],
-            'nonce' => $queryData['nonce'],
-            'echoStr' => 'test',
-        ];
+        $_SERVER['HTTP_timestamp'] = $queryData['timestamp'];
+        $_SERVER['HTTP_nonce'] = $queryData['nonce'];
+        $_SERVER['HTTP_echoStr'] = 'test';
 
         sort($queryData, SORT_STRING);
 
-        $_GET['signature'] = hash('sha256', implode('', $queryData));
+        $_SERVER['HTTP_signature'] = hash('sha256', implode('', $queryData));
 
         $response = $app->access_token->notify();
 
         $this->assertInstanceOf(Response::class, $response);
 
-        $this->assertSame($_GET['echoStr'], $response->headers->get('echoStr'));
+        $this->assertSame($_SERVER['HTTP_echoStr'], $response->headers->get('echoStr'));
 
         $response = $app->access_token->notify(function ($receiveData){
             return false;

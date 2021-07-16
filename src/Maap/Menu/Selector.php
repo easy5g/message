@@ -73,7 +73,7 @@ class Selector extends ISPSelector
      * @param $buttons
      * @param string|null $ISP
      * @param string|null $url
-     * @return bool
+     * @return string
      * @throws BindingResolutionException|InvalidISPException
      */
     public function create($buttons, ?string $ISP = null, ?string $url = null)

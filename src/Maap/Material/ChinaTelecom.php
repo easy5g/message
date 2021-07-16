@@ -15,5 +15,11 @@ class ChinaTelecom extends Client
     use Common;
 
     protected $uploadUrl = '%s/bot/%s/%s/medias/upload';
+    protected $deleteUrl = '%s/bot/%s/%s/medias/delete';
+    protected $downloadUrl = '%s/bot/%s/%s/medias/download';
+
     protected $serviceProvider = Const5G::CT;
+    protected $allowTypes = [
+        'png','jpg','jpeg','amr','mp3','m4a','mp4','webm'
+    ];
 }

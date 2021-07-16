@@ -20,6 +20,7 @@ class MaapProvider extends ServiceProvider
         'chatbot' => Chatbot\Selector::class,
         'menu' => Menu\Selector::class,
         'material' => Material\Selector::class,
+        'media' => Material\MediaSelector::class
     ];
 
     /**
@@ -33,7 +34,7 @@ class MaapProvider extends ServiceProvider
             });
         }
 
-        $this->app->bind('request',function () {
+        $this->app->bind('request', function () {
             return Request::createFromGlobals();
         });
     }
