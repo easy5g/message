@@ -18,7 +18,7 @@ class ISPSelectorTest extends TestCase
 {
     public function testSetDefaultEmptyISP()
     {
-        $selector = Factory::Maap($GLOBALS['config'], false)->base;
+        $selector = Factory::Chatbot($GLOBALS['config'], false)->base;
 
         $this->expectException(InvalidISPException::class);
 
@@ -27,7 +27,7 @@ class ISPSelectorTest extends TestCase
 
     public function testSetDefaultErrISP()
     {
-        $selector = Factory::Maap([
+        $selector = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
         ], false)->base;
@@ -39,7 +39,7 @@ class ISPSelectorTest extends TestCase
 
     public function testSetDefaultISP()
     {
-        $selector = Factory::Maap([
+        $selector = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
         ], false)->base;
@@ -55,7 +55,7 @@ class ISPSelectorTest extends TestCase
 
     public function testGetDefaultISP()
     {
-        $selector = Factory::Maap([
+        $selector = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
         ], false)->base;
 

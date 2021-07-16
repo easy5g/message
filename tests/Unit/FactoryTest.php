@@ -18,40 +18,40 @@ class FactoryTest extends TestCase
     {
         $this->expectException(InvalidConfigException::class);
 
-        Factory::Maap([]);
+        Factory::Chatbot([],false);
     }
 
     public function testMakeErrException()
     {
         $this->expectException(InvalidConfigException::class);
 
-        Factory::Maap(['test' => 1]);
+        Factory::Chatbot(['test' => 1]);
     }
 
     public function testMake()
     {
-        $maap1 = Factory::Maap([Const5G::CM => $GLOBALS['config'][Const5G::CM]]);
+        $Chatbot1 = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]]);
 
-        $maap2 = Factory::Maap();
+        $Chatbot2 = Factory::Chatbot();
 
-        $this->assertSame($maap1, $maap2);
+        $this->assertSame($Chatbot1, $Chatbot2);
 
-        $maap3 = Factory::Maap([Const5G::CT => $GLOBALS['config'][Const5G::CT]]);
+        $Chatbot3 = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]]);
 
-        $this->assertSame($maap3, $maap2);
+        $this->assertSame($Chatbot3, $Chatbot2);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $maap3->config->get(Const5G::CT)['appId']);
+        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $Chatbot3->config->get(Const5G::CT)['appId']);
 
-        $maap4 = Factory::Maap([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
+        $Chatbot4 = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
 
-        $this->assertNotSame($maap4, $maap3);
+        $this->assertNotSame($Chatbot4, $Chatbot3);
 
-        $maap5 = Factory::Maap([Const5G::CU => $GLOBALS['config'][Const5G::CU]], false);
+        $Chatbot5 = Factory::Chatbot([Const5G::CU => $GLOBALS['config'][Const5G::CU]], false);
 
-        $this->assertNotSame($maap5, $maap4);
+        $this->assertNotSame($Chatbot5, $Chatbot4);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $maap4->config->get(Const5G::CT)['appId']);
+        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $Chatbot4->config->get(Const5G::CT)['appId']);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CU]['appId'], $maap5->config->get(Const5G::CU)['appId']);
+        $this->assertEquals($GLOBALS['config'][Const5G::CU]['appId'], $Chatbot5->config->get(Const5G::CU)['appId']);
     }
 }

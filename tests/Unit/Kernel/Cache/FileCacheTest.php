@@ -19,7 +19,7 @@ class FileCacheTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $app = Factory::Maap([Const5G::CU => $GLOBALS['config'][Const5G::CU]],false);
+        $app = Factory::Chatbot([Const5G::CU => $GLOBALS['config'][Const5G::CU]],false);
 
         self::$cache = $app->cache;
     }

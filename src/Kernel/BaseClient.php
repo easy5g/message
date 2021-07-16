@@ -10,7 +10,7 @@ namespace Easy5G\Kernel;
 
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Support\Const5G;
-use Easy5G\Maap\Application;
+use Easy5G\Chatbot\Application;
 
 abstract class BaseClient
 {

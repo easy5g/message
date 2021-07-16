@@ -28,7 +28,7 @@ class ArrayCacheTest extends TestCase
             ]
         ];
 
-        $app = Factory::Maap($config,false);
+        $app = Factory::Chatbot($config,false);
 
         self::$cache = $app->cache;
     }

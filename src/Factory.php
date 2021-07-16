@@ -9,13 +9,13 @@ namespace Easy5G;
 
 use Easy5G\Kernel\App;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
-use Easy5G\Maap\Application;
+use Easy5G\Chatbot\Application;
 
 /**
  * Class Factory
  * @package Easy5G
  *
- * @method static Application Maap(array $config = [], $singleton = true)
+ * @method static Application Chatbot(array $config = [], $singleton = true)
  */
 class Factory
 {
