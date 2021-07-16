@@ -82,7 +82,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($_SERVER['HTTP_echoStr'], $response->headers->get('echoStr'));
 
-        $response = $app->access_token->notify(function ($receiveData){
+        $response = $app->access_token->notify(function (){
             return false;
         });
 

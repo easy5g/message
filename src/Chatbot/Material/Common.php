@@ -135,6 +135,7 @@ trait Common
      * getMaterial
      * @param string $resource
      * @return ResponseInterface|string
+     * @throws BindingResolutionException|InvalidISPException
      */
     protected function getMaterial(string $resource)
     {
@@ -167,22 +168,15 @@ trait Common
      * notify
      * @param $callback
      * @return Response
+     * @throws BindingResolutionException|InvalidISPException
      */
     public function notify($callback)
     {
         /** @var Application $app */
         $app = $this->app;
 
-        $headers = [
-            'signature' => $app->request->headers->get('signature'),
-            'timestamp' => $app->request->headers->get('timestamp'),
-            'nonce' => $app->request->headers->get('nonce'),
-        ];
-
-        $postData = $app->request->getContent();
-
-        if (Auth::verify($headers['signature'], $headers['timestamp'], $headers['nonce'], $app->access_token->getToken()) && !is_null($callback)) {
-            call_user_func($callback, new Collection(json_decode($postData, true)));
+        if (Auth::verify($app) && !is_null($callback)) {
+            call_user_func($callback, new Collection(json_decode($app->request->getContent(), true)));
         }
 
         return new Response('', 200);

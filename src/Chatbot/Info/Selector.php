@@ -76,4 +76,17 @@ class Selector extends ISPSelector
         /** @var Common $client */
         return $client->update($info);
     }
+
+    public function notify(?callable $callback = null, ?string $ISP = null)
+    {
+        /** @var Client $client */
+        $client = $this->getClient($ISP);
+
+        if ($client instanceof ChinaMobile) {
+            throw new InvalidISPException('China Mobile does not support this method:' . explode('::', __METHOD__)[1]);
+        }
+
+        /** @var Common $client */
+        return $client->notify();
+    }
 }

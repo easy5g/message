@@ -75,43 +75,35 @@ trait Common
 
         $config = $app->config->get($this->serviceProvider);
 
-        $headers = [
-            'signature' => $app->request->headers->get('signature'),
-            'timestamp' => $app->request->headers->get('timestamp'),
-            'nonce' => $app->request->headers->get('nonce'),
-            'echoStr' => $app->request->headers->get('echoStr'),
-        ];
-
-        $verifyRes = self::verify($headers['signature'], $headers['timestamp'], $headers['nonce'], $app->access_token->getToken());
+        $verifyRes = self::verify($app);
 
         if ($verifyRes && !is_null($callback)) {
-            $res = $verifyRes & call_user_func($callback, $headers);
+            $res = $verifyRes & call_user_func($callback);
         } else {
             $res = $verifyRes;
         }
 
         return new Response('', 200, [
-            'echoStr' => $res ? $headers['echoStr'] : '',
+            'echoStr' => $res ? $app->request->headers->get('echoStr') : '',
             'appId' => $res ? $config['appId'] : '',
         ]);
     }
 
     /**
      * verify 对服务器的请求进行验证
-     * @param $signature
-     * @param $timestamp
-     * @param $nonce
-     * @param $accessToken
+     * @param Application $app
      * @return bool
+     * @throws BindingResolutionException
+     * @throws InvalidISPException
      */
-    public static function verify($signature, $timestamp, $nonce, $accessToken)
+    public static function verify(Application $app)
     {
-        $verifyData['nonce'] = $nonce;
-        $verifyData['timestamp'] = $timestamp;
-        $verifyData['token'] = $accessToken;
+        $verifyData['nonce'] = $app->request->headers->get('nonce');
+        $verifyData['timestamp'] = $app->request->headers->get('timestamp');
+        $verifyData['token'] = $app->access_token->getToken();
 
         sort($verifyData, SORT_STRING);
 
-        return hash('sha256', implode('', $verifyData)) === $signature;
+        return hash('sha256', implode('', $verifyData)) === $app->request->headers->get('signature');
     }
 }

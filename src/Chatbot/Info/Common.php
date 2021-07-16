@@ -12,8 +12,11 @@ use Easy5G\Kernel\Exceptions\InvalidInfoException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Exceptions\BadResponseException;
 use Easy5G\Chatbot\Application;
+use Easy5G\Chatbot\Auth\Common as Auth;
 use Easy5G\Chatbot\Structure\Info;
+use Easy5G\Kernel\Support\Collection;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Symfony\Component\HttpFoundation\Response;
 
 trait Common
 {
@@ -74,5 +77,22 @@ trait Common
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ]
         ]);
+    }
+
+    /**
+     * notify
+     * @param $callback
+     * @return Response
+     * @throws BindingResolutionException|InvalidISPException
+     */
+    public function notify($callback)
+    {        /** @var Application $app */
+        $app = $this->app;
+
+        if (Auth::verify($app) && !is_null($callback)) {
+            call_user_func($callback, new Collection(json_decode($app->request->getContent(), true)));
+        }
+
+        return new Response('', 200);
     }
 }
