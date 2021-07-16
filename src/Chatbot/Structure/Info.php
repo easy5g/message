@@ -12,7 +12,7 @@ use Easy5G\Kernel\Support\Collection;
 
 /**
  * Class Info
- * @package Easy5G\Chatbot\Chatbot
+ * @package Easy5G\Info\Info
  * @property string $serviceDescription
  * @property string[] $category
  * @property string $callBackNumber

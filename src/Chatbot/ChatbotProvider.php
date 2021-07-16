@@ -17,7 +17,7 @@ class ChatbotProvider extends ServiceProvider
         'base' => Base\Selector::class,
         'access_token' => Auth\Selector::class,
         'server' => Auth\Selector::class,
-        'chatbot' => Chatbot\Selector::class,
+        'info' => Info\Selector::class,
         'menu' => Menu\Selector::class,
         'material' => Material\Selector::class,
         'media' => Material\MediaSelector::class

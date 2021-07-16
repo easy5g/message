@@ -5,7 +5,7 @@
  * Time: 11:45 上午
  */
 
-namespace Easy5G\Chatbot\Chatbot;
+namespace Easy5G\Chatbot\Info;
 
 
 use Easy5G\Kernel\Support\Const5G;

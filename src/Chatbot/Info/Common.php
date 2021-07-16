@@ -5,7 +5,7 @@
  * Time: 11:02 上午
  */
 
-namespace Easy5G\Chatbot\Chatbot;
+namespace Easy5G\Chatbot\Info;
 
 
 use Easy5G\Kernel\Exceptions\InvalidInfoException;
@@ -18,11 +18,11 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 trait Common
 {
     /**
-     * info
+     * all
      * @return Info
      * @throws BindingResolutionException|InvalidISPException
      */
-    public function info()
+    public function all()
     {
         /** @var Application $app */
         $app = $this->app;
@@ -49,17 +49,17 @@ trait Common
     }
 
     /**
-     * updateInfo
+     * update
      * @param Info|array $info
      * @return string
      * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
      */
-    public function updateInfo($info)
+    public function update($info)
     {
         if (is_array($info)) {
             $info = new Info($info);
         } elseif (!$info instanceof Info) {
-            throw new InvalidInfoException('$info must be an array or instanceof Info Easy5G\Chatbot\Chatbot\Info');
+            throw new InvalidInfoException('$info must be an array or instanceof Info Easy5G\Chatbot\Structure\Info');
         }
 
         /** @var Application $app */

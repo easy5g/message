@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Selector
- * @package Easy5G\Chatbot\Auth
+ * @package Easy5G\Info\Auth
  */
 class Selector extends ISPSelector
 {

@@ -5,7 +5,7 @@
  * Time: 4:33 下午
  */
 
-namespace Unit\Chatbot\Chatbot;
+namespace Unit\Chatbot\Info;
 
 use Easy5G\Factory;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class SelectorTest extends TestCase
 {
-    public function testUpdateInfo()
+    public function testUpdate()
     {
         $config = [
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
@@ -43,14 +43,14 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame(json_encode($mockData),$app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CT));
+        $this->assertSame(json_encode($mockData),$app->info->update(new Info(['provider' => 'test11']), Const5G::CT));
 
         $this->expectException(InvalidISPException::class);
 
-        $app->chatbot->updateInfo(new Info(['provider' => 'test11']), Const5G::CM);
+        $app->info->update(new Info(['provider' => 'test11']), Const5G::CM);
     }
 
-    public function testInfo()
+    public function testAll()
     {
         $config = [
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
@@ -67,10 +67,10 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame($mockData, $app->chatbot->info(Const5G::CT)->toJson(JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+        $this->assertSame($mockData, $app->info->all(Const5G::CT)->toJson(JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
 
         $this->expectException(InvalidISPException::class);
 
-        $this->assertTrue($app->chatbot->info(Const5G::CM));
+        $this->assertTrue($app->info->all(Const5G::CM));
     }
 }

@@ -5,7 +5,7 @@
  * Time: 5:49 下午
  */
 
-namespace Easy5G\Chatbot\Chatbot;
+namespace Easy5G\Chatbot\Info;
 
 
 use Easy5G\Kernel\Exceptions\InvalidInfoException;
@@ -18,7 +18,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 
 /**
  * Class Selector
- * @package Easy5G\Chatbot\Chatbot
+ * @package Easy5G\Info\Info
  */
 class Selector extends ISPSelector
 {
@@ -29,13 +29,13 @@ class Selector extends ISPSelector
     ];
 
     /**
-     * info
+     * all
      * @param string|null $ISP
      * @param string|null $url
      * @return Info
      * @throws BindingResolutionException|InvalidISPException
      */
-    public function info(?string $ISP = null, ?string $url = null)
+    public function all(?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
@@ -49,18 +49,18 @@ class Selector extends ISPSelector
         }
 
         /** @var Common $client */
-        return $client->info();
+        return $client->all();
     }
 
     /**
-     * updateInfo
+     * update
      * @param array|Info $info
      * @param string|null $ISP
      * @param string|null $url
      * @return string
      * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
      */
-    public function updateInfo($info, ?string $ISP = null, ?string $url = null)
+    public function update($info, ?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
@@ -74,6 +74,6 @@ class Selector extends ISPSelector
         }
 
         /** @var Common $client */
-        return $client->updateInfo($info);
+        return $client->update($info);
     }
 }

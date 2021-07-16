@@ -14,12 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Application
- * @package Easy5G\Chatbot
+ * @package Easy5G\Info
  *
  * @property Base\Selector base
  * @property Auth\Selector access_token
  * @property Server\Selector server
- * @property Chatbot\Selector chatbot
+ * @property Info\Selector info
  * @property Menu\Selector menu
  * @property Request request
  */

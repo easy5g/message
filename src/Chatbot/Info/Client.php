@@ -5,7 +5,7 @@
  * Time: 4:29 下午
  */
 
-namespace Easy5G\Chatbot\Chatbot;
+namespace Easy5G\Chatbot\Info;
 
 
 use Easy5G\Kernel\BaseClient;
