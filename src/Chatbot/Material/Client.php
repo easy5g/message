@@ -60,10 +60,18 @@ abstract class Client extends BaseClient
      * @param string $path
      * @param string|null $thumbnailPath
      * @return string
-     * @throws InvalidConfigException
+     * @throws CommonException|InvalidConfigException
      */
     public function upload(string $path, ?string $thumbnailPath = null)
     {
+        if (!File::readable($path)) {
+            throw new CommonException('Unable to get file:' . $path);
+        }
+
+        if (!empty($thumbnailPath) && !File::readable($thumbnailPath)) {
+            throw new CommonException('Unable to get file:' . $thumbnailPath);
+        }
+
         $multipart = $this->getMultipart($path, $thumbnailPath);
 
         /** @var Application $app */
@@ -130,8 +138,8 @@ abstract class Client extends BaseClient
                 $filename .= File::getStreamExt($contents);
             }
 
-            if (@file_put_contents($savePath.'/'.$filename, $contents) === false) {
-                throw new CommonException('Failed to save file path:'.$savePath.'/'.$filename);
+            if (@file_put_contents($savePath . '/' . $filename, $contents) === false) {
+                throw new CommonException('Failed to save file path:' . $savePath . '/' . $filename);
             }
 
             return true;

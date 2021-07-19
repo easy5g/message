@@ -23,7 +23,7 @@ class MediaSelector extends Selector
                 $this->app->singletonIf($serviceClass);
             } else {
                 $this->app->singletonIf($serviceClass, function () use ($serviceClass) {
-                    $instance = new $serviceClass;
+                    $instance = new $serviceClass($this->app);
 
                     $instance->setPeriodOfValidity('temp');
 

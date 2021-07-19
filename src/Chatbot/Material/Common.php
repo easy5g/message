@@ -126,7 +126,7 @@ trait Common
      * set$periodOfValidity
      * @param $period
      */
-    protected function setPeriodOfValidity($period)
+    public function setPeriodOfValidity($period)
     {
         $this->periodOfValidity = $period;
     }
@@ -157,7 +157,7 @@ trait Common
         }
 
         //如果返回的是json则直接返回
-        if (strpos($response->getHeaderLine('Content-Type'), 'application/json')) {
+        if (strpos($response->getHeaderLine('Content-Type'), 'application/json') !== false) {
             return $response->getBody()->getContents();
         }
 

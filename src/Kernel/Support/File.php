@@ -105,4 +105,14 @@ class File
 
         return '';
     }
+
+    /**
+     * readable
+     * @param $filepath
+     * @return bool
+     */
+    public static function readable($filepath)
+    {
+        return is_file($filepath) && is_readable($filepath);
+    }
 }
