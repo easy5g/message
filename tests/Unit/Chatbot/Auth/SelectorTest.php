@@ -49,7 +49,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($mockData['accessToken'], $app->access_token->getToken(true, Const5G::CT));
 
-        $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['cspid'] . ':' . hash('sha256', $config[Const5G::CM]['cspToken'] . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
+        $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['appid'] . ':' . hash('sha256', hash('sha256', $config[Const5G::CM]['password']) . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
 
         $this->assertSame($exceptAccessToken, $app->access_token->getToken(true, Const5G::CM));
     }
@@ -82,7 +82,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($_SERVER['HTTP_echoStr'], $response->headers->get('echoStr'));
 
-        $response = $app->access_token->notify(function (){
+        $response = $app->access_token->notify(function () {
             return false;
         });
 

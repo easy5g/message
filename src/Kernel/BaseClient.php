@@ -11,6 +11,7 @@ namespace Easy5G\Kernel;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Chatbot\Application;
+use function Swoole\Coroutine\Http\request;
 
 abstract class BaseClient
 {
@@ -85,9 +86,21 @@ abstract class BaseClient
         }
 
         if ($this->serviceProvider === Const5G::CM) {
-            return sprintf($this->getUrl($name), $config['serverRoot']);
+            if ($name === 'upload') {
+                $serverRoot = $config['fileServerRoot'];
+            } else {
+                $serverRoot = $config['serverRoot'];
+            }
+
+            $placeholderNum = substr_count($url, '%s');
+
+            if ($placeholderNum === 1) {
+                return sprintf($url, $serverRoot);
+            } else {
+                return sprintf($url, $serverRoot, $config['chatbotURI']);
+            }
         } else {
-            return sprintf($this->getUrl($name), $config['serverRoot'], $config['apiVersion'], $config['chatbotId']);
+            return sprintf($url, $config['serverRoot'], $config['apiVersion'], $config['chatbotId']);
         }
     }
 }

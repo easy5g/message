@@ -20,7 +20,8 @@ class ChatbotProvider extends ServiceProvider
         'info' => Info\Selector::class,
         'menu' => Menu\Selector::class,
         'material' => Material\Selector::class,
-        'media' => Material\MediaSelector::class
+        'media' => Material\MediaSelector::class,
+        'template_message' => TemplateMessage\Selector::class
     ];
 
     /**

@@ -25,8 +25,8 @@ class ChinaMobile extends Client
         $config = $this->app->config->get($this->serviceProvider);
 
         return [
-            'cspid' => $config['cspid'],
-            'cspToken' => $config['cspToken'],
+            'appid' => $config['appid'],
+            'password' => $config['password'],
         ];
     }
 
@@ -47,11 +47,13 @@ class ChinaMobile extends Client
     {
         $credentials = $this->getCredentials();
 
+        $token = hash('sha256',$credentials['password']);
+
         $date = gmdate('D, d M Y H:i:s', time()) . ' GMT';
 
-        $sha256 = hash('sha256', $credentials['cspToken'] . $date);
+        $sha256 = hash('sha256', $token . $date);
 
-        $base64 = base64_encode($credentials['cspid'] . ':' . $sha256);
+        $base64 = base64_encode($credentials['appid'] . ':' . $sha256);
 
         return 'Basic ' . $base64;
     }

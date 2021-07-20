@@ -16,10 +16,11 @@ class Config extends Repository
 {
     public $spBaseConfigField = [
         Const5G::CM => [
-            'cspid' => 'string',
-            'cspToken' => 'string',
+            'appid' => 'string',
+            'password' => 'string',
             'serverRoot' => 'string',
             'userId' => 'string',
+            'chatbotURI' => 'string',
         ],
         Const5G::CU => [
             'appId' => 'string',

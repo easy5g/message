@@ -29,7 +29,7 @@ class Xml
     /**
      * XML encode.
      *
-     * @param mixed  $data
+     * @param mixed $data
      * @param string $root
      * @param string $item
      * @param string $attr
@@ -39,28 +39,50 @@ class Xml
      */
     public static function build(
         $data,
-        $root = 'xml',
-        $item = 'item',
-        $attr = '',
-        $id = 'id'
-    ) {
-        if (is_array($attr)) {
-            $_attr = [];
+        $statement = 'xml',
+        $statementAttr = '',
+        $root = 'root',
+        $rootAttr = '',
+        $defaultItem = 'item'
+    )
+    {
+        $statementAttr = self::parseAttr($statementAttr);
+        $rootAttr = self::parseAttr($rootAttr);
 
-            foreach ($attr as $key => $value) {
-                $_attr[] = "{$key}=\"{$value}\"";
-            }
-
-            $attr = implode(' ', $_attr);
-        }
-
-        $attr = trim($attr);
-        $attr = empty($attr) ? '' : " {$attr}";
-        $xml = "<{$root}{$attr}>";
-        $xml .= self::data2Xml($data, $item, $id);
+        $xml = "<?{$statement}{$statementAttr}?>";
+        $xml .= "<{$root}{$rootAttr}>";
+        $xml .= self::data2Xml($data, $defaultItem);
         $xml .= "</{$root}>";
 
         return $xml;
+    }
+
+    /**
+     * parseAttr
+     * @param $attr
+     * @return string
+     */
+    protected static function parseAttr($attr)
+    {
+        if (is_string($attr)) {
+            if (empty($attr)) {
+                $attr = '';
+            } else {
+                $attr = ' ' . $attr;
+            }
+        } elseif (is_array($attr)) {
+            $arrAttr = [];
+
+            foreach ($attr as $key => $value) {
+                $arrAttr[] = "{$key}=\"{$value}\"";
+            }
+
+            $attr = ' ' . implode(' ', $arrAttr);
+        } else {
+            $attr = '';
+        }
+
+        return $attr;
     }
 
     /**
@@ -85,7 +107,7 @@ class Xml
         $result = null;
 
         if (is_object($obj)) {
-            $obj = (array) $obj;
+            $obj = (array)$obj;
         }
 
         if (is_array($obj)) {
@@ -108,29 +130,52 @@ class Xml
     /**
      * data2Xml
      * @param $data
-     * @param string $item
-     * @param string $id
+     * @param string|null $item
+     * @param string $parentKey
      * @return string
      */
-    protected static function data2Xml($data, $item = 'item', $id = 'id')
+    protected static function data2Xml($data, ?string $item = 'item', ?string $parentKey = '')
     {
         $xml = $attr = '';
 
         foreach ($data as $key => $val) {
-            if (is_numeric($key)) {
-                $id && $attr = " {$id}=\"{$key}\"";
-                $key = $item;
-            }
+            is_object($val) && $val = (array)$val;
 
-            $xml .= "<{$key}{$attr}>";
+            if (empty($parentKey)) {
+                if (is_numeric($key)) {
+                    $key = $item;
+                }
 
-            if ((is_array($val) || is_object($val))) {
-                $xml .= self::data2Xml((array) $val, $item, $id);
+                if (is_array($val)) {
+                    $xml .= self::data2Xml($val, $item, $key);
+                } else {
+                    $xml .= "<{$key}>{$val}</{$key}>";
+                }
             } else {
-                $xml .= is_numeric($val) ? $val : self::cdata($val);
-            }
+                if (is_numeric($key)) {
+                    if (is_array($val)) {
+                        foreach ($val as $k => $v) {
+                            if (is_numeric($k)) {
+                                $k = $item;
+                            }
 
-            $xml .= "</{$key}>";
+                            if (is_array($v)) {
+                                $xml .= "<{$parentKey}>" . self::data2Xml($v, $item, $k) . "</{$parentKey}>";
+                            } else {
+                                $xml .= "<{$parentKey}><{$k}>{$v}</{$k}></{$parentKey}>";
+                            }
+                        }
+                    } else {
+                        $xml .= "<{$parentKey}>{$val}</{$parentKey}>";
+                    }
+                } else {
+                    if (is_array($val)) {
+                        $xml .= "<{$parentKey}>" . self::data2Xml($val, $item, $key) . "</{$parentKey}>";
+                    } else {
+                        $xml .= "<{$parentKey}><{$key}>{$val}</{$key}></{$parentKey}>";
+                    }
+                }
+            }
         }
 
         return $xml;
