@@ -44,11 +44,7 @@ trait Common
             throw new BadResponseException('Incorrect data structure');
         }
 
-        $info = new Info();
-
-        $info->assignment($infoArr);
-
-        return $info;
+        return $app->chatbotInfoFactory->create()->assignment($infoArr);
     }
 
     /**
@@ -59,14 +55,14 @@ trait Common
      */
     public function update($info)
     {
+        /** @var Application $app */
+        $app = $this->app;
+
         if (is_array($info)) {
-            $info = new Info($info);
+            $info = $app->chatbotInfoFactory->create($info);
         } elseif (!$info instanceof Info) {
             throw new InvalidInfoException('$info must be an array or instanceof Info Easy5G\Chatbot\Structure\Info');
         }
-
-        /** @var Application $app */
-        $app = $this->app;
 
         return $app->httpClient->post($this->getCurrentUrl('update'), [
             'json' => $info->toJson(),

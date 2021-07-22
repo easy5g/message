@@ -8,7 +8,6 @@
 namespace Easy5G\Chatbot;
 
 
-use Easy5G\Chatbot\TemplateMessage\Selector;
 use Easy5G\Kernel\App;
 use Easy5G\Kernel\Contracts\ConfigInterface;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
@@ -25,7 +24,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @property Menu\Selector menu
  * @property Material\Selector material
  * @property Material\MediaSelector media
- * @property Selector template_message
+ * @property TemplateMessage\Selector template_message
+ * @property Message\Selector message
  * @property Request request
  */
 class Application extends App

@@ -8,8 +8,8 @@
 namespace Unit\Chatbot\Menu;
 
 use Easy5G\Factory;
-use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
+use Easy5G\Kernel\Exceptions\MenuException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
@@ -62,7 +62,7 @@ class SelectorTest extends TestCase
 
         $this->expectException(InvalidISPException::class);
 
-        $this->assertTrue($app->menu->list(Const5G::CM));
+        $app->menu->list(Const5G::CM);
     }
 
     public function testCreate()
@@ -107,7 +107,7 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->expectException(BadRequestException::class);
+        $this->expectException(MenuException::class);
 
         $app->menu->create('test');
     }

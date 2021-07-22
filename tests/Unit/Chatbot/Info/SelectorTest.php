@@ -43,11 +43,11 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame(json_encode($mockData),$app->info->update(new Info(['provider' => 'test11']), Const5G::CT));
+        $this->assertSame(json_encode($mockData), $app->info->update($app->chatbotInfoFactory->create(['provider' => 'test11'], Const5G::CT)));
 
         $this->expectException(InvalidISPException::class);
 
-        $app->info->update(new Info(['provider' => 'test11']), Const5G::CM);
+        $app->info->update($app->chatbotInfoFactory->create(['provider' => 'test11']), Const5G::CM);
     }
 
     public function testAll()
@@ -67,7 +67,7 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame($mockData, $app->info->all(Const5G::CT)->toJson(JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+        $this->assertSame($mockData, $app->info->all(Const5G::CT)->toJson(JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
         $this->expectException(InvalidISPException::class);
 

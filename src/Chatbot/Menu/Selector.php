@@ -8,6 +8,7 @@
 namespace Easy5G\Chatbot\Menu;
 
 
+use Easy5G\Kernel\Contracts\ChatbotMenuInterface;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
@@ -31,10 +32,10 @@ class Selector extends ISPSelector
      */
     public function list(?string $ISP = null, ?string $url = null)
     {
-        $ISP = $this->getDefaultISP($ISP);
-
         /** @var Application $app */
         $app = $this->app;
+
+        $ISP = $app->getDefaultISP($ISP);
 
         if ($ISP === Const5G::CM) {
             throw new InvalidISPException('China Mobile does not support this method:' . explode('::', __METHOD__)[1]);
@@ -54,10 +55,10 @@ class Selector extends ISPSelector
      */
     public function current(?string $ISP = null, ?string $url = null)
     {
-        $ISP = $this->getDefaultISP($ISP);
-
         /** @var Application $app */
         $app = $this->app;
+
+        $ISP = $app->getDefaultISP($ISP);
 
         if ($ISP === Const5G::CM) {
             throw new InvalidISPException('China Mobile does not support this method:' . explode('::', __METHOD__)[1]);
@@ -70,13 +71,13 @@ class Selector extends ISPSelector
 
     /**
      * create
-     * @param $buttons
+     * @param string|ChatbotMenuInterface $menu
      * @param string|null $ISP
      * @param string|null $url
      * @return string
      * @throws BindingResolutionException|InvalidISPException
      */
-    public function create($buttons, ?string $ISP = null, ?string $url = null)
+    public function create($menu, ?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
@@ -89,7 +90,11 @@ class Selector extends ISPSelector
             $client->setThirdUrl($url, 'create');
         }
 
+        if (is_string($menu)) {
+            $menu = $this->app->chatbotMenuFactory->create($menu);
+        }
+
         /** @var Common $client */
-        return $client->create($buttons);
+        return $client->create($menu);
     }
 }

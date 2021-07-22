@@ -45,7 +45,7 @@ class Selector extends ISPSelector
         }
 
         if ($url) {
-            $client->setThirdUrl($url,'query');
+            $client->setThirdUrl($url, 'query');
         }
 
         /** @var Common $client */
@@ -70,7 +70,7 @@ class Selector extends ISPSelector
         }
 
         if ($url) {
-            $client->setThirdUrl($url,'update');
+            $client->setThirdUrl($url, 'update');
         }
 
         /** @var Common $client */
@@ -87,6 +87,6 @@ class Selector extends ISPSelector
         }
 
         /** @var Common $client */
-        return $client->notify();
+        return $client->notify($callback);
     }
 }

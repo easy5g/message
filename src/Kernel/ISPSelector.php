@@ -21,44 +21,6 @@ abstract class ISPSelector
     }
 
     /**
-     * setDefaultISP 设置默认的ISP
-     * @param $ISP
-     * @throws InvalidISPException
-     */
-    public function setDefaultISP($ISP = null)
-    {
-        $ISPs = $this->app->config->getServiceProviders();
-
-        if (empty($ISP)) {
-            if (count($ISPs) !== 1) {
-                throw new InvalidISPException('More than one ISP, please select manually');
-            }
-
-            $ISP = reset($ISPs);
-        } else {
-            if (!in_array($ISP, $ISPs)) {
-                throw new InvalidISPException('Illegal ISP');
-            }
-        }
-
-        $this->app->defaultISP = $ISP;
-    }
-
-    /**
-     * getDefaultISP 获取默认的ISP
-     * @return int
-     * @throws InvalidISPException
-     */
-    public function getDefaultISP(?string $ISP = null)
-    {
-        if (!isset($this->app->defaultISP) || ($ISP && $this->app->defaultISP !== $ISP)) {
-            $this->setDefaultISP($ISP);
-        }
-
-        return $this->app->defaultISP;
-    }
-
-    /**
      * getServiceName 根据ISP获取相应的服务名
      * @param $ISP
      * @return mixed
@@ -67,7 +29,7 @@ abstract class ISPSelector
     public function getServiceName($ISP = null)
     {
         if (
-            empty($ISP = $this->getDefaultISP($ISP))
+            empty($ISP = $this->app->getDefaultISP($ISP))
             || !isset($this->serviceMap[$ISP])
         ) {
             throw new InvalidISPException('Illegal ISP');

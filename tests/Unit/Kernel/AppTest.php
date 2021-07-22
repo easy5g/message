@@ -14,51 +14,51 @@ use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
 
-class ISPSelectorTest extends TestCase
+class AppTest extends TestCase
 {
     public function testSetDefaultEmptyISP()
     {
-        $selector = Factory::Chatbot($GLOBALS['config'], false)->base;
+        $app = Factory::Chatbot($GLOBALS['config'], false);
 
         $this->expectException(InvalidISPException::class);
 
-        $selector->setDefaultISP();
+        $app->setDefaultISP();
     }
 
     public function testSetDefaultErrISP()
     {
-        $selector = Factory::Chatbot([
+        $app = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
-        ], false)->base;
+        ], false);
 
         $this->expectException(InvalidISPException::class);
 
-        $selector->setDefaultISP(Const5G::CM);
+        $app->setDefaultISP(Const5G::CM);
     }
 
     public function testSetDefaultISP()
     {
-        $selector = Factory::Chatbot([
+        $app = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
             Const5G::CT => $GLOBALS['config'][Const5G::CT],
-        ], false)->base;
+        ], false);
 
-        $selector->setDefaultISP(Const5G::CT);
+        $app->setDefaultISP(Const5G::CT);
 
-        $this->assertEquals(Const5G::CT, $selector->getDefaultISP());
+        $this->assertEquals(Const5G::CT, $app->getDefaultISP());
 
-        $selector->setDefaultISP(Const5G::CU);
+        $app->setDefaultISP(Const5G::CU);
 
-        $this->assertEquals(Const5G::CU, $selector->getDefaultISP());
+        $this->assertEquals(Const5G::CU, $app->getDefaultISP());
     }
 
     public function testGetDefaultISP()
     {
-        $selector = Factory::Chatbot([
+        $app = Factory::Chatbot([
             Const5G::CU => $GLOBALS['config'][Const5G::CU],
-        ], false)->base;
+        ], false);
 
-        $this->assertEquals(Const5G::CU, $selector->getDefaultISP());
+        $this->assertEquals(Const5G::CU, $app->getDefaultISP());
     }
 }

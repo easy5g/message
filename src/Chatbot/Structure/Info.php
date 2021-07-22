@@ -108,10 +108,13 @@ class Info extends Collection
     /**
      * assignment
      * @param array $info
+     * @return Info
      */
     public function assignment(array $info)
     {
         $this->items = $info;
+
+        return $this;
     }
 
     /**
