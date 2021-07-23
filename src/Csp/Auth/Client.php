@@ -18,7 +18,7 @@ abstract class Client extends BaseClient
      * getCredentials 获取认证字段
      * @return array
      */
-    abstract protected function getCredentials(): array;
+    abstract public function getCredentials(): array;
 
     /**
      * requestToken 向上游请求token

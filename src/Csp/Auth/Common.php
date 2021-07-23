@@ -21,7 +21,7 @@ trait Common
      * getCredentials
      * @return array
      */
-    protected function getCredentials(): array
+    public function getCredentials(): array
     {
         $config = $this->app->config->get($this->serviceProvider);
 
@@ -41,20 +41,11 @@ trait Common
         /** @var Application $app */
         $app = $this->app;
 
-        $date = date('YmdHis');
-
-        $nonce = $date . str_pad(mt_rand(0, 99999999), 8, '0');
-
         $credentials = $this->getCredentials();
 
         $responseContent = $app->httpClient->post($this->getCurrentUrl('token'), [
             'json' => $credentials,
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'timestamp' => $date,
-                'nonce' => $nonce,
-                'signature' => md5($credentials['accessKey'] . $nonce . $date)
-            ]
+            'headers' => ['Content-Type' => 'application/json'] + $this->getCTCspVerifyHeader($credentials['accessKey'])
         ]);
 
         $tokenData = json_decode($responseContent, true);

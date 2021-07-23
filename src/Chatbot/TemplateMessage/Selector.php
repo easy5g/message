@@ -69,28 +69,4 @@ class Selector extends ISPSelector
 
         return $client->batchReply($data);
     }
-
-    /**
-     * batchSendVariable
-     * @param array $data
-     * @param string|null $ISP
-     * @param string|null $url
-     * @return string
-     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
-     */
-    public function batchSendVariable(array $data, ?string $ISP = null, ?string $url = null)
-    {
-        /** @var ChinaMobile $client */
-        $client = $this->getClient($ISP);
-
-        if (!$client instanceof ChinaMobile) {
-            throw new InvalidISPException('Only China Mobile support this method:' . explode('::', __METHOD__)[1]);
-        }
-
-        if ($url) {
-            $client->setThirdUrl($url, 'batchSendVariable');
-        }
-
-        return $client->batchSendVariable($data);
-    }
 }

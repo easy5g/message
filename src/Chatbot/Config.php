@@ -19,7 +19,6 @@ class Config extends Repository
             'appid' => 'string',
             'password' => 'string',
             'serverRoot' => 'string',
-            'userId' => 'string',
             'chatbotURI' => 'string',
         ],
         Const5G::CU => [

@@ -17,6 +17,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
  * @package Easy5G\Info
  *
  * @property Auth\Selector access_token
+ * @property Customer\Selector customer
  */
 class Application extends App
 {

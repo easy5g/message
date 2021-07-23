@@ -7,7 +7,9 @@
 
 namespace Easy5G\Kernel\Support;
 
+use Easy5G\Kernel\Exceptions\CommonException;
 use finfo;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class File.
@@ -114,5 +116,58 @@ class File
     public static function readable($filepath)
     {
         return is_file($filepath) && is_readable($filepath);
+    }
+
+    /**
+     * mkdir
+     * @param $dir
+     * @return bool
+     * @throws CommonException
+     */
+    public static function mkdir($dir)
+    {
+        if (!is_dir($dir) && @!mkdir($dir, 0755, true)) {
+            throw new CommonException('Failed to create folders');
+        }
+
+        return true;
+    }
+
+    /**
+     * saveFileFromResponse
+     * @param ResponseInterface $response
+     * @param string $resource
+     * @param string|null $savePath
+     * @param string|null $filename
+     * @return bool
+     * @throws CommonException
+     */
+    public static function saveFileFromResponse(ResponseInterface $response, string $resource, ?string $savePath, ?string $filename)
+    {
+        empty($savePath) && $savePath = '/tmp/easy5G';
+
+        self::mkdir($savePath);
+
+        //没有传入文件名，则从header头获取，未获取到则按地址md5
+        if (empty($filename)) {
+            if (preg_match('/filename="(?<filename>.*?)"/', $response->getHeaderLine('Content-Disposition'), $match)) {
+                $filename = $match['filename'];
+            } else {
+                $filename = md5($resource);
+            }
+        }
+
+        $contents = $response->getBody()->getContents();
+
+        //没有后缀则加上后缀
+        if (empty(pathinfo($filename, PATHINFO_EXTENSION))) {
+            $filename .= File::getStreamExt($contents);
+        }
+
+        if (@file_put_contents($savePath . '/' . $filename, $contents) === false) {
+            throw new CommonException('Failed to save file path:' . $savePath . '/' . $filename);
+        }
+
+        return true;
     }
 }

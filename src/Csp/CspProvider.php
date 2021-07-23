@@ -15,6 +15,7 @@ class CspProvider extends ServiceProvider
 {
     public $singletons = [
         'access_token' => Auth\Selector::class,
+        'customer' => Customer\Selector::class,
     ];
 
     /**

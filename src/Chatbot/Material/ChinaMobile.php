@@ -57,7 +57,7 @@ class ChinaMobile extends Client
 
         return [
             'Authorization' => $app->access_token->getToken(),
-            'userId' => $app->config->get($this->serviceProvider)['userId'],
+            'User-Agent' => $app->config->get($this->serviceProvider . '.chatbotURI'),
             'Content-Type' => 'multipart/form-data',
             'Accept' => 'application/json',
             'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
@@ -78,7 +78,7 @@ class ChinaMobile extends Client
         return [
             'Authorization' => $app->access_token->getToken(),
             'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
-            'userId' => $app->config->get($this->serviceProvider)['userId'],
+            'User-Agent' => $app->config->get($this->serviceProvider . '.chatbotURI'),
             'tid' => $media,
         ];
     }
@@ -121,13 +121,10 @@ class ChinaMobile extends Client
 
         $response = $app->httpClient->post($this->getCurrentUrl('download'), [
             'headers' => [
+                'User-Agent' => $app->config->get($this->serviceProvider . '.chatbotURI'),
                 'Authorization' => $app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
-                'userId' => $app->config->get($this->serviceProvider)['userId'],
             ],
-            'query' => [
-                'tid' => $resource,
-            ]
         ], true);
 
         $httpStatusCode = $response->getStatusCode();

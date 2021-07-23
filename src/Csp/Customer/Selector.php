@@ -5,9 +5,11 @@
  * Time: 5:49 下午
  */
 
-namespace Easy5G\Csp\Auth;
+namespace Easy5G\Csp\Customer;
 
 
+use Easy5G\Kernel\Exceptions\CommonException;
+use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
@@ -22,36 +24,27 @@ class Selector extends ISPSelector
     ];
 
     /**
-     * getToken
-     * @param bool $refresh
+     * uploadImage
+     * @param string $path
+     * @param $uploadType
      * @param string|null $ISP
      * @param string|null $url
      * @return string
-     * @throws BindingResolutionException|InvalidISPException
+     * @throws BindingResolutionException|CommonException|InvalidConfigException|InvalidISPException
      */
-    public function getToken(?bool $refresh = false, ?string $ISP = null, ?string $url = null)
+    public function uploadImage(string $path,$uploadType,?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */
         $client = $this->getClient($ISP);
 
         if ($url) {
-            $client->setThirdUrl($url, 'token');
+            $client->setThirdUrl($url, 'upload');
         }
 
-        return $client->getToken($refresh);
-    }
+        if ($client instanceof ChinaMobile) {
+            throw new InvalidISPException('China Mobile does not support this way of Material upload');
+        }
 
-    /**
-     * getCredentials
-     * @param string|null $ISP
-     * @return array
-     * @throws BindingResolutionException|InvalidISPException
-     */
-    public function getCredentials(?string $ISP = null)
-    {
-        /** @var Client $client */
-        $client = $this->getClient($ISP);
-
-        return $client->getCredentials();
+        return $client->upload($path,$uploadType);
     }
 }

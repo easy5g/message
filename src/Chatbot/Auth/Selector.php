@@ -14,10 +14,6 @@ use Easy5G\Kernel\Support\Const5G;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Class Selector
- * @package Easy5G\Info\Auth
- */
 class Selector extends ISPSelector
 {
     public $serviceMap = [

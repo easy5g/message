@@ -20,7 +20,7 @@ class ChinaMobile extends Client
      * getCredentials
      * @return array
      */
-    protected function getCredentials(): array
+    public function getCredentials(): array
     {
         $config = $this->app->config->get($this->serviceProvider);
 

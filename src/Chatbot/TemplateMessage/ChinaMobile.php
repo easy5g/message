@@ -20,7 +20,6 @@ class ChinaMobile extends Client
 {
     protected $batchSendUrl = '%s/vg2/messaging/messaging/group/template/outbound/%s/requests';
     protected $batchReplyUrl = '%s/vg2/messaging/messaging/interaction/template/outbound/{chatbotURI}/requests';
-    protected $batchSendVariableUrl = '%s/vg2/messaging/sendTask/sendVariable';
     protected $serviceProvider = Const5G::CM;
 
     /**
@@ -39,7 +38,6 @@ class ChinaMobile extends Client
         return $app->httpClient->post($this->getCurrentUrl('batchSend'), [
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),
-                'userId' => $app->config->get($this->serviceProvider)['userId'],
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
             'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
@@ -62,34 +60,9 @@ class ChinaMobile extends Client
         return $app->httpClient->post($this->getCurrentUrl('batchReply'), [
             'headers' => [
                 'Authorization' => $app->access_token->getToken(),
-                'userId' => $app->config->get($this->serviceProvider)['userId'],
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
             'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
-        ]);
-    }
-
-    /**
-     * batchSendVariable
-     * @param array $data
-     * @return string
-     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
-     */
-    public function batchSendVariable(array $data)
-    {
-        $this->checkVariableData($data);
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        return $app->httpClient->post($this->getCurrentUrl('batchSendVariable'), [
-            'headers' => [
-                'Authorization' => $app->access_token->getToken(),
-                'Content-Type' => 'application/json',
-                'userId' => $app->config->get($this->serviceProvider)['userId'],
-                'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
-            ],
-            'json' => json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
         ]);
     }
 
@@ -142,48 +115,6 @@ class ChinaMobile extends Client
             }
 
             $data['rcsBodyText'] = Xml::cdata($data['rcsBodyText']);
-        }
-    }
-
-    /**
-     * checkVariableData
-     * @param array $data
-     * @throws InvalidArgumentException
-     */
-    protected function checkVariableData(array &$data)
-    {
-        if (empty($data['id'])) {
-            throw new InvalidArgumentException('Id must be filled in');
-        }
-
-        if (empty($data['transactionId'])) {
-            throw new InvalidArgumentException('TransactionId must be filled in');
-        }
-
-        if (empty($data['datas'])) {
-            throw new InvalidArgumentException('Datas must be filled in');
-        }
-
-        if (empty($data['variables'])) {
-            throw new InvalidArgumentException('Datas.variables must be filled in');
-        }
-
-        if (empty($data['values'])) {
-            throw new InvalidArgumentException('Datas.values must be filled in');
-        }
-
-        if (is_array($data['datas']['variables'])) {
-            $data['datas']['variables'] = implode('|',$data['datas']['variables']);
-        }
-
-        foreach ($data['datas']['values'] as &$value) {
-            if (empty($value['mobile']) || empty($value['value'])) {
-                throw new InvalidArgumentException('Datas.values error');
-            }
-
-            if (is_array($value['value'])) {
-                $value['value'] = implode('|',$value['value']);
-            }
         }
     }
 

@@ -74,7 +74,7 @@ abstract class BaseClient
             return $thirdUrl;
         }
 
-        /** @var Application $app */
+        /** @var App $app */
         $app = $this->app;
 
         $config = $app->config->get($this->serviceProvider);
@@ -85,6 +85,8 @@ abstract class BaseClient
             throw new InvalidConfigException('The correct URL is not configured here, name:' . $name);
         }
 
+        $placeholderNum = substr_count($url, '%s');
+
         if ($this->serviceProvider === Const5G::CM) {
             if ($name === 'upload') {
                 $serverRoot = $config['fileServerRoot'];
@@ -92,15 +94,33 @@ abstract class BaseClient
                 $serverRoot = $config['serverRoot'];
             }
 
-            $placeholderNum = substr_count($url, '%s');
-
             if ($placeholderNum === 1) {
                 return sprintf($url, $serverRoot);
             } else {
                 return sprintf($url, $serverRoot, $config['chatbotURI']);
             }
         } else {
-            return sprintf($url, $config['serverRoot'], $config['apiVersion'], $config['chatbotId']);
+            if ($placeholderNum === 2) {
+                return sprintf($url, $config['serverRoot'], $config['apiVersion']);
+            } else {
+                return sprintf($url, $config['serverRoot'], $config['apiVersion'], $config['chatbotId']);
+            }
         }
+    }
+
+    /**
+     * getCTCspVerifyHeader
+     * @param $accessKey
+     * @return array
+     */
+    public function getCTCspVerifyHeader(string $accessKey)
+    {
+        $timestamp = date('YmdHis');
+
+        $nonce = $timestamp . str_pad(mt_rand(0, 99999999), 8, '0');
+
+        $signature = md5($accessKey . $nonce . $timestamp);
+
+        return compact('timestamp', 'nonce', 'signature');
     }
 }

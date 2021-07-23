@@ -113,36 +113,12 @@ abstract class Client extends BaseClient
      * @return bool|string
      * @throws CommonException
      */
-    public function download(string $resource, ?string $filename, string $savePath)
+    public function download(string $resource, ?string $filename, ?string $savePath)
     {
-        if (!is_dir($savePath) && @!mkdir($savePath, 0755, true)) {
-            throw new CommonException('Failed to create folders');
-        }
-
         $response = $this->getMaterial($resource);
 
         if ($response instanceof ResponseInterface) {
-            //没有传入文件名，则从header头获取，未获取到则按地址md5
-            if (empty($filename)) {
-                if (preg_match('/filename="(?<filename>.*?)"/', $response->getHeaderLine('Content-Disposition'), $match)) {
-                    $filename = $match['filename'];
-                } else {
-                    $filename = md5($resource);
-                }
-            }
-
-            $contents = $response->getBody()->getContents();
-
-            //没有后缀则加上后缀
-            if (empty(pathinfo($filename, PATHINFO_EXTENSION))) {
-                $filename .= File::getStreamExt($contents);
-            }
-
-            if (@file_put_contents($savePath . '/' . $filename, $contents) === false) {
-                throw new CommonException('Failed to save file path:' . $savePath . '/' . $filename);
-            }
-
-            return true;
+            return File::saveFileFromResponse($response, $resource, $savePath, $filename);
         }
 
         return $response;

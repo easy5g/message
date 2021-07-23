@@ -126,11 +126,15 @@ class Selector extends ISPSelector
         /** @var Client $client */
         $client = $this->getClient($ISP);
 
+        if ($client instanceof ChinaMobile) {
+            $client->setThirdUrl($resource, 'download');
+        }
+
         if ($url) {
             $client->setThirdUrl($url, 'download');
         }
 
-        return $client->download($resource, $filename, $savePath ?? '/tmp/easy5G');
+        return $client->download($resource, $filename, $savePath);
     }
 
     /**

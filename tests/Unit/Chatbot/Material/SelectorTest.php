@@ -64,16 +64,16 @@ class SelectorTest extends TestCase
 
         $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
-        $stubCt = $this->createMock(HttpClient::class);
+        $stubCm = $this->createMock(HttpClient::class);
 
-        $stubCt->method('post')->willReturn(new Response(200, [], $content))->with(
-            $this->stringContains('downLoadRes'),
-            $this->callback(function ($options) use ($media) {
-                return $options['query']['tid'] === $media;
+        $stubCm->method('post')->willReturn(new Response(200, [], $content))->with(
+            $this->stringContains('README.md'),
+            $this->callback(function ($options) {
+                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
             })
         );
 
-        $cm->instance('httpClient', $stubCt);
+        $cm->instance('httpClient', $stubCm);
 
         $this->assertTrue($cm->material->download($media, 'downloadTest', './'));
 
@@ -83,16 +83,16 @@ class SelectorTest extends TestCase
 
         unlink('./downloadTest');
 
-        $stubCt = $this->createMock(HttpClient::class);
+        $stubCm = $this->createMock(HttpClient::class);
 
-        $stubCt->method('post')->willReturn(new Response(404, [], ''))->with(
-            $this->stringContains('downLoadRes'),
-            $this->callback(function ($options) use ($media) {
-                return $options['query']['tid'] === $media;
+        $stubCm->method('post')->willReturn(new Response(404, [], ''))->with(
+            $this->stringContains('README.md'),
+            $this->callback(function ($options) {
+                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
             })
         );
 
-        $cm->instance('httpClient', $stubCt);
+        $cm->instance('httpClient', $stubCm);
 
         $this->assertSame(404, $cm->material->download($media, 'downloadTest', './'));
     }
@@ -128,7 +128,7 @@ class SelectorTest extends TestCase
             $this->anything(),
             $this->callback(function ($options) use ($media) {
                 return $options['headers']['tid'] === $media &&
-                    $options['headers']['userId'] === $GLOBALS['chatbot.config'][Const5G::CM]['userId'];
+                    $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
             })
         );
 
@@ -185,7 +185,7 @@ class SelectorTest extends TestCase
         }))->with(
             $this->anything(),
             $this->callback(function ($options) use ($cm) {
-                return $options['headers']['userId'] === $GLOBALS['chatbot.config'][Const5G::CM]['userId']
+                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI']
                     && $options['headers']['Authorization'] === $cm->access_token->getToken()
                     && $options['multipart']['0']['name'] === 'File';
             })
