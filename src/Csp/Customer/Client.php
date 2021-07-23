@@ -12,7 +12,10 @@ use Easy5G\Csp\Application;
 use Easy5G\Kernel\BaseClient;
 use Easy5G\Kernel\Exceptions\CommonException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
+use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\File;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class Client extends BaseClient
 {
@@ -22,6 +25,13 @@ abstract class Client extends BaseClient
      * @return array
      */
     abstract protected function getUploadHeaders(int $uploadType): array;
+
+    /**
+     * getMaterial
+     * @param string $resource
+     * @return mixed
+     */
+    abstract protected function getMaterial(string $resource);
 
     /**
      * upload
@@ -49,8 +59,22 @@ abstract class Client extends BaseClient
         ]);
     }
 
-    public function download()
+    /**
+     * download
+     * @param string $resource
+     * @param string|null $filename
+     * @param string|null $savePath
+     * @return bool
+     * @throws BindingResolutionException|CommonException|InvalidISPException
+     */
+    public function download(string $resource, ?string $filename, ?string $savePath)
     {
+        $response = $this->getMaterial($resource);
 
+        if ($response instanceof ResponseInterface) {
+            return File::saveFileFromResponse($response, $resource, $savePath, $filename);
+        }
+
+        return $response;
     }
 }

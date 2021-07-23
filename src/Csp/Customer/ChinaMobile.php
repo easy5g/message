@@ -16,5 +16,11 @@ class ChinaMobile extends Client
 
     protected function getUploadHeaders(int $uploadType): array
     {
+        // TODO: Implement getUploadHeaders() method.
+    }
+
+    protected function getMaterial(string $resource)
+    {
+        // TODO: Implement getMaterial() method.
     }
 }

@@ -47,4 +47,20 @@ class Selector extends ISPSelector
 
         return $client->upload($path,$uploadType);
     }
+
+    public function download(string $resource, ?string $filename = null, ?string $savePath = null, ?string $ISP = null, ?string $url = null)
+    {
+        /** @var Client $client */
+        $client = $this->getClient($ISP);
+
+        if ($client instanceof ChinaMobile) {
+            $client->setThirdUrl($resource, 'download');
+        }
+
+        if ($url) {
+            $client->setThirdUrl($url, 'download');
+        }
+
+        return $client->download($resource, $filename, $savePath);
+    }
 }
