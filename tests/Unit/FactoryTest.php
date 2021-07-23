@@ -30,28 +30,28 @@ class FactoryTest extends TestCase
 
     public function testMake()
     {
-        $Chatbot1 = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]]);
+        $Chatbot1 = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]]);
 
         $Chatbot2 = Factory::Chatbot();
 
         $this->assertSame($Chatbot1, $Chatbot2);
 
-        $Chatbot3 = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]]);
+        $Chatbot3 = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]]);
 
         $this->assertSame($Chatbot3, $Chatbot2);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $Chatbot3->config->get(Const5G::CT)['appId']);
+        $this->assertEquals($GLOBALS['chatbot.config'][Const5G::CT]['appId'], $Chatbot3->config->get(Const5G::CT)['appId']);
 
-        $Chatbot4 = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
+        $Chatbot4 = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
 
         $this->assertNotSame($Chatbot4, $Chatbot3);
 
-        $Chatbot5 = Factory::Chatbot([Const5G::CU => $GLOBALS['config'][Const5G::CU]], false);
+        $Chatbot5 = Factory::Chatbot([Const5G::CU => $GLOBALS['chatbot.config'][Const5G::CU]], false);
 
         $this->assertNotSame($Chatbot5, $Chatbot4);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CT]['appId'], $Chatbot4->config->get(Const5G::CT)['appId']);
+        $this->assertEquals($GLOBALS['chatbot.config'][Const5G::CT]['appId'], $Chatbot4->config->get(Const5G::CT)['appId']);
 
-        $this->assertEquals($GLOBALS['config'][Const5G::CU]['appId'], $Chatbot5->config->get(Const5G::CU)['appId']);
+        $this->assertEquals($GLOBALS['chatbot.config'][Const5G::CU]['appId'], $Chatbot5->config->get(Const5G::CU)['appId']);
     }
 }

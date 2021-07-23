@@ -20,7 +20,7 @@ class SelectorTest extends TestCase
     {
         $this->expectException(BadRequestException::class);
 
-        $config = [Const5G::CT => $GLOBALS['config'][Const5G::CT]];
+        $config = [Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]];
 
         Factory::Chatbot($config, false)->access_token->getToken(true, null, 'http://127.0.0.1:9999/test');
     }
@@ -28,8 +28,8 @@ class SelectorTest extends TestCase
     public function testGetToken()
     {
         $config = [
-            Const5G::CT => $GLOBALS['config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['config'][Const5G::CM]
+            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
+            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -57,7 +57,7 @@ class SelectorTest extends TestCase
     public function testNotify()
     {
         $config = [
-            Const5G::CT => $GLOBALS['config'][Const5G::CT],
+            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
         ];
 
         $app = Factory::Chatbot($config, false);

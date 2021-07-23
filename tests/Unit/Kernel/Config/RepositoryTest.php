@@ -18,7 +18,7 @@ class RepositoryTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $config = $GLOBALS['config'];
+        $config = $GLOBALS['chatbot.config'];
 
         self::$config = new Repository([
             Const5G::CM => $config[Const5G::CM]
@@ -36,7 +36,7 @@ class RepositoryTest extends TestCase
      */
     public function testSetGet()
     {
-        $this->assertSame($GLOBALS['config'][Const5G::CM]['appId'], self::$config->get(Const5G::CM . '.appId'));
+        $this->assertSame($GLOBALS['chatbot.config'][Const5G::CM]['appId'], self::$config->get(Const5G::CM . '.appId'));
 
         $this->assertNull(self::$config->get('test.test'));
         $this->assertSame('testDefault', self::$config->get(Const5G::CU, 'testDefault'));

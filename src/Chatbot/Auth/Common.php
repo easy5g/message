@@ -44,6 +44,7 @@ trait Common
         $responseContent = $app->httpClient->post($this->getCurrentUrl('token'), [
             'json' => $this->getCredentials(),
             'headers' => [
+                'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ]

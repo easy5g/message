@@ -20,7 +20,7 @@ class SelectorTest extends TestCase
 {
     public function testDownload()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
+        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
 
         $stubCt = $this->createMock(HttpClient::class);
 
@@ -62,7 +62,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($fail, $ct->material->download($media, 'downloadTest', './'));
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]], false);
+        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $stubCt = $this->createMock(HttpClient::class);
 
@@ -99,7 +99,7 @@ class SelectorTest extends TestCase
 
     public function testDelete()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
+        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
 
         $stubCt = $this->createMock(HttpClient::class);
 
@@ -118,7 +118,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($successRes, $ct->material->delete($media));
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]], false);
+        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $stuCm = $this->createMock(HttpClient::class);
 
@@ -128,7 +128,7 @@ class SelectorTest extends TestCase
             $this->anything(),
             $this->callback(function ($options) use ($media) {
                 return $options['headers']['tid'] === $media &&
-                    $options['headers']['userId'] === $GLOBALS['config'][Const5G::CM]['userId'];
+                    $options['headers']['userId'] === $GLOBALS['chatbot.config'][Const5G::CM]['userId'];
             })
         );
 
@@ -139,7 +139,7 @@ class SelectorTest extends TestCase
 
     public function testUpload()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['config'][Const5G::CT]], false);
+        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
 
         $stub = $this->createMock(HttpClient::class);
 
@@ -168,7 +168,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($successRes, $ct->material->upload('./LICENSE'));
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]], false);
+        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $stub = $this->createMock(HttpClient::class);
 
@@ -185,7 +185,7 @@ class SelectorTest extends TestCase
         }))->with(
             $this->anything(),
             $this->callback(function ($options) use ($cm) {
-                return $options['headers']['userId'] === $GLOBALS['config'][Const5G::CM]['userId']
+                return $options['headers']['userId'] === $GLOBALS['chatbot.config'][Const5G::CM]['userId']
                     && $options['headers']['Authorization'] === $cm->access_token->getToken()
                     && $options['multipart']['0']['name'] === 'File';
             })
@@ -204,7 +204,7 @@ class SelectorTest extends TestCase
 
     public function testNotify()
     {
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['config'][Const5G::CM]], false);
+        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $cmXml = '<?xml version="1.0" encoding="UTF-8"?>
 <file xmlns="urn:gsma:params:xml:ns:rcs:rcs:fthttp" xmlns:e="urn:gsma:params :xml:ns:rcs:rcs:up:fthttpext">

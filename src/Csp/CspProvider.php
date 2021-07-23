@@ -5,23 +5,16 @@
  * Time: 11:08 上午
  */
 
-namespace Easy5G\Chatbot;
+namespace Easy5G\Csp;
 
 
 use Easy5G\Kernel\ServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 
-class ChatbotProvider extends ServiceProvider
+class CspProvider extends ServiceProvider
 {
     public $singletons = [
         'access_token' => Auth\Selector::class,
-        'server' => Auth\Selector::class,
-        'info' => Info\Selector::class,
-        'menu' => Menu\Selector::class,
-        'material' => Material\Selector::class,
-        'media' => Material\MediaSelector::class,
-        'template_message' => TemplateMessage\Selector::class,
-        'message' => Message\Selector::class,
     ];
 
     /**

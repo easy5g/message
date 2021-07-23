@@ -44,7 +44,7 @@ abstract class App extends Container
      */
     public static function hasInstance()
     {
-        return isset(self::$instance);
+        return isset(static::$instance);
     }
 
     /**

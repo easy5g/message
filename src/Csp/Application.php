@@ -5,27 +5,18 @@
  * Time: 5:28 下午
  */
 
-namespace Easy5G\Chatbot;
+namespace Easy5G\Csp;
 
 
 use Easy5G\Kernel\App;
 use Easy5G\Kernel\Contracts\ConfigInterface;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class Application
  * @package Easy5G\Info
  *
  * @property Auth\Selector access_token
- * @property Server\Selector server
- * @property Info\Selector info
- * @property Menu\Selector menu
- * @property Material\Selector material
- * @property Material\MediaSelector media
- * @property TemplateMessage\Selector template_message
- * @property Message\Selector message
- * @property Request request
  */
 class Application extends App
 {
@@ -43,7 +34,7 @@ class Application extends App
      */
     protected function registerServiceProviders()
     {
-        (new ChatbotProvider($this))->register();
+        (new CspProvider($this))->register();
     }
 
     /**

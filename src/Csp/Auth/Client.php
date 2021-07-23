@@ -5,14 +5,14 @@
  * Time: 4:29 下午
  */
 
-namespace Easy5G\Chatbot\Auth;
+namespace Easy5G\Csp\Auth;
 
 
 use Easy5G\Kernel\BaseClient;
 
 abstract class Client extends BaseClient
 {
-    const TOKEN_PREFIX = 'easy5g.chatbot.access_token.';
+    const TOKEN_PREFIX = 'easy5g.cps.access_token.';
 
     /**
      * getCredentials 获取认证字段

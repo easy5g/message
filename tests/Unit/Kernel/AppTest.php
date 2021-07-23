@@ -18,7 +18,7 @@ class AppTest extends TestCase
 {
     public function testSetDefaultEmptyISP()
     {
-        $app = Factory::Chatbot($GLOBALS['config'], false);
+        $app = Factory::Chatbot($GLOBALS['chatbot.config'], false);
 
         $this->expectException(InvalidISPException::class);
 
@@ -28,8 +28,8 @@ class AppTest extends TestCase
     public function testSetDefaultErrISP()
     {
         $app = Factory::Chatbot([
-            Const5G::CU => $GLOBALS['config'][Const5G::CU],
-            Const5G::CT => $GLOBALS['config'][Const5G::CT],
+            Const5G::CU => $GLOBALS['chatbot.config'][Const5G::CU],
+            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
         ], false);
 
         $this->expectException(InvalidISPException::class);
@@ -40,8 +40,8 @@ class AppTest extends TestCase
     public function testSetDefaultISP()
     {
         $app = Factory::Chatbot([
-            Const5G::CU => $GLOBALS['config'][Const5G::CU],
-            Const5G::CT => $GLOBALS['config'][Const5G::CT],
+            Const5G::CU => $GLOBALS['chatbot.config'][Const5G::CU],
+            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
         ], false);
 
         $app->setDefaultISP(Const5G::CT);
@@ -56,7 +56,7 @@ class AppTest extends TestCase
     public function testGetDefaultISP()
     {
         $app = Factory::Chatbot([
-            Const5G::CU => $GLOBALS['config'][Const5G::CU],
+            Const5G::CU => $GLOBALS['chatbot.config'][Const5G::CU],
         ], false);
 
         $this->assertEquals(Const5G::CU, $app->getDefaultISP());
