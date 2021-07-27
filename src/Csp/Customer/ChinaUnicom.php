@@ -15,7 +15,7 @@ class ChinaUnicom extends Client
     use Common;
 
     protected $uploadUrl = '%s/cspApi/%s/uploadFile';
-    protected $tokenUrl = '%s/cspApi/%s/getFile';
+    protected $downloadUrl = '%s/cspApi/%s/getFile';
 
     protected $serviceProvider = Const5G::CU;
 }

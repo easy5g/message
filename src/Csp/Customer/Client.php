@@ -30,9 +30,9 @@ abstract class Client extends BaseClient
     /**
      * getMaterial
      * @param string $resource
-     * @return mixed
+     * @return ResponseInterface
      */
-    abstract protected function getMaterial(string $resource);
+    abstract protected function getMaterial(string $resource): ResponseInterface;
 
     /**
      * downloadFail

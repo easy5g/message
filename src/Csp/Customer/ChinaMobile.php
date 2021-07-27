@@ -9,6 +9,8 @@ namespace Easy5G\Csp\Customer;
 
 
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
+use Psr\Http\Message\ResponseInterface;
 
 class ChinaMobile extends Client
 {
@@ -19,8 +21,13 @@ class ChinaMobile extends Client
         // TODO: Implement getUploadHeaders() method.
     }
 
-    protected function getMaterial(string $resource)
+    protected function getMaterial(string $resource): ResponseInterface
     {
         // TODO: Implement getMaterial() method.
+    }
+
+    protected function downloadFail(ResponseCollection $collect, ResponseInterface $response)
+    {
+        // TODO: Implement downloadFail() method.
     }
 }

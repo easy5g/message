@@ -41,7 +41,7 @@ trait Common
      * @return ResponseInterface
      * @throws BindingResolutionException|InvalidISPException
      */
-    protected function getMaterial(string $resource)
+    protected function getMaterial(string $resource):ResponseInterface
     {
         /** @var Application $app */
         $app = $this->app;
@@ -66,7 +66,7 @@ trait Common
         if ($response->getBody()->read(1) === '{') {
             $response->getBody()->rewind();
 
-            $response->withHeader('Content-Type','application/json')->withStatus(404);
+            $response = $response->withHeader('Content-Type','application/json')->withStatus(404);
         }else{
             $response->withoutHeader('Content-Type');
         }
