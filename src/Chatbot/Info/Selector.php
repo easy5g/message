@@ -15,6 +15,7 @@ use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Chatbot\Structure\Info;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Selector
@@ -77,6 +78,13 @@ class Selector extends ISPSelector
         return $client->update($info);
     }
 
+    /**
+     * notify
+     * @param callable|null $callback
+     * @param string|null $ISP
+     * @return Response
+     * @throws BindingResolutionException|InvalidISPException
+     */
     public function notify(?callable $callback = null, ?string $ISP = null)
     {
         /** @var Client $client */

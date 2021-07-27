@@ -18,7 +18,7 @@ class ChinaTelecom extends Client
     protected $deleteUrl = '%s/bot/%s/%s/medias/delete';
     protected $downloadUrl = '%s/bot/%s/%s/medias/download';
 
-    protected $serviceProvider = Const5G::CT;
+    public $serviceProvider = Const5G::CT;
     protected $allowTypes = [
         'png','jpg','jpeg','amr','mp3','m4a','mp4','webm'
     ];

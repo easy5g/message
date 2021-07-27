@@ -10,8 +10,8 @@ namespace Easy5G\Kernel;
 
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Support\Const5G;
-use Easy5G\Chatbot\Application;
-use function Swoole\Coroutine\Http\request;
+use Easy5G\Kernel\Support\ResponseCollection;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class BaseClient
 {
@@ -122,5 +122,22 @@ abstract class BaseClient
         $signature = md5($accessKey . $nonce . $timestamp);
 
         return compact('timestamp', 'nonce', 'signature');
+    }
+
+    /**
+     * returnCollect
+     * @param ResponseInterface $response
+     * @param callable $callback
+     * @return ResponseCollection
+     */
+    protected function returnCollect(ResponseInterface $response, ?callable $callback = null)
+    {
+        $collect = new ResponseCollection();
+
+        if (!empty($callback)) {
+            $callback($collect, $response);
+        }
+
+        return $collect;
     }
 }

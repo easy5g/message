@@ -14,6 +14,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Collection;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Easy5G\Kernel\Support\Xml;
 use Easy5G\Chatbot\Application;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +27,7 @@ class ChinaMobile extends Client
     protected $deleteUrl = '%s/vg2/messaging/Content';
     protected $downloadUrl = '%s/vg2/messaging/Content/downLoadRes';
 
-    protected $serviceProvider = Const5G::CM;
+    public $serviceProvider = Const5G::CM;
 
     /**
      * checkPath
@@ -111,7 +112,7 @@ class ChinaMobile extends Client
     /**
      * getMaterial
      * @param string $resource
-     * @return int|ResponseInterface
+     * @return ResponseInterface
      * @throws BindingResolutionException|InvalidISPException|InvalidConfigException
      */
     protected function getMaterial(string $resource)
@@ -133,11 +134,19 @@ class ChinaMobile extends Client
             throw new BadRequestException('Request to ' . $resource . ' return ' . $httpStatusCode . ' HTTP Status Code', $httpStatusCode);
         }
 
-        if ($httpStatusCode === 200) {
-            return $response;
-        }
+        return $response;
+    }
 
-        return $httpStatusCode;
+    /**
+     * downloadFail
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function downloadFail(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $collect->setStatusCode($response->getStatusCode())
+            ->setResult(false)
+            ->setMessage('Resource not found');
     }
 
     /**

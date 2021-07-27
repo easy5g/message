@@ -13,6 +13,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class Selector extends ISPSelector
@@ -29,7 +30,7 @@ class Selector extends ISPSelector
      * @param $uploadType
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidConfigException|InvalidISPException
      */
     public function uploadImage(string $path,$uploadType,?string $ISP = null, ?string $url = null)
@@ -48,6 +49,16 @@ class Selector extends ISPSelector
         return $client->upload($path,$uploadType);
     }
 
+    /**
+     * download
+     * @param string $resource
+     * @param string|null $filename
+     * @param string|null $savePath
+     * @param string|null $ISP
+     * @param string|null $url
+     * @return ResponseCollection
+     * @throws BindingResolutionException|CommonException|InvalidISPException
+     */
     public function download(string $resource, ?string $filename = null, ?string $savePath = null, ?string $ISP = null, ?string $url = null)
     {
         /** @var Client $client */

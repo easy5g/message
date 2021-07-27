@@ -37,7 +37,11 @@ class SelectorTest extends TestCase
 
         $ct->instance('httpClient', $stubCt);
 
-        $this->assertTrue($ct->material->download($media, 'downloadTest', './'));
+        $collect = $ct->material->download($media, 'downloadTest', './');
+
+        $this->assertTrue($collect->getResult());
+
+        $this->assertSame('./downloadTest', $collect->get('file_path'));
 
         $this->assertTrue(is_file('./downloadTest'));
 
@@ -60,7 +64,13 @@ class SelectorTest extends TestCase
 
         $ct->instance('httpClient', $stubCt);
 
-        $this->assertSame($fail, $ct->material->download($media, 'downloadTest', './'));
+        $collect = $ct->material->download($media, 'downloadTest', './');
+
+        $this->assertFalse($collect->getResult());
+
+        $this->assertSame(40007, $collect->getCode());
+
+        $this->assertSame("can't find the file", $collect->getMessage());
 
         $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
@@ -75,7 +85,9 @@ class SelectorTest extends TestCase
 
         $cm->instance('httpClient', $stubCm);
 
-        $this->assertTrue($cm->material->download($media, 'downloadTest', './'));
+        $collect = $cm->material->download($media, 'downloadTest', './');
+
+        $this->assertTrue($collect->getResult());
 
         $this->assertTrue(is_file('./downloadTest'));
 
@@ -94,7 +106,11 @@ class SelectorTest extends TestCase
 
         $cm->instance('httpClient', $stubCm);
 
-        $this->assertSame(404, $cm->material->download($media, 'downloadTest', './'));
+        $collect = $cm->material->download($media, 'downloadTest', './');
+
+        $this->assertSame(404, $collect->getStatusCode());
+
+        $this->assertFalse($collect->getResult());
     }
 
     public function testDelete()
@@ -228,6 +244,6 @@ class SelectorTest extends TestCase
             $this->assertSame('69828977037225984.jpg', $receiveData['file-info']['file-name']);
         });
 
-        $this->assertSame(200,$response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

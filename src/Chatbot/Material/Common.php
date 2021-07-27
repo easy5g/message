@@ -14,6 +14,7 @@ use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Collection;
 use Easy5G\Chatbot\Application;
 use Easy5G\Chatbot\Auth\Common as Auth;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -134,7 +135,7 @@ trait Common
     /**
      * getMaterial
      * @param string $resource
-     * @return ResponseInterface|string
+     * @return ResponseInterface
      * @throws BindingResolutionException|InvalidISPException
      */
     protected function getMaterial(string $resource)
@@ -158,10 +159,28 @@ trait Common
 
         //如果返回的是json则直接返回
         if (strpos($response->getHeaderLine('Content-Type'), 'application/json') !== false) {
-            return $response->getBody()->getContents();
+            return $response->withStatus(404);
         }
 
         return $response;
+    }
+
+    /**
+     * downloadFail
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function downloadFail(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $raw = $response->getBody()->getContents();
+
+        $data = json_decode($raw, true);
+
+        $collect->setStatusCode(200)
+            ->setRaw($raw)
+            ->setResult(false)
+            ->setCode($data['errorCode'])
+            ->setMessage($data['errorMessage']);
     }
 
     /**

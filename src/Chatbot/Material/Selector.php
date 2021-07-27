@@ -13,6 +13,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -118,7 +119,7 @@ class Selector extends ISPSelector
      * @param string|null $savePath
      * @param string|null $ISP
      * @param string|null $url
-     * @return bool|string
+     * @return ResponseCollection
      * @throws BindingResolutionException|InvalidISPException|CommonException
      */
     public function download(string $resource, ?string $filename = null, ?string $savePath = null, ?string $ISP = null, ?string $url = null)

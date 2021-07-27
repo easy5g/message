@@ -14,6 +14,7 @@ use Easy5G\Kernel\Exceptions\CommonException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\File;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -34,10 +35,17 @@ abstract class Client extends BaseClient
     abstract protected function getMaterial(string $resource);
 
     /**
+     * downloadFail
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    abstract protected function downloadFail(ResponseCollection $collect, ResponseInterface $response);
+
+    /**
      * upload
      * @param string $path
      * @param int $uploadType
-     * @return string
+     * @return ResponseCollection
      * @throws CommonException|InvalidConfigException
      */
     public function upload(string $path, int $uploadType)
@@ -53,10 +61,24 @@ abstract class Client extends BaseClient
         /** @var Application $app */
         $app = $this->app;
 
-        return $app->httpClient->post($this->getCurrentUrl('upload'), [
+        $response = $app->httpClient->post($this->getCurrentUrl('upload'), [
             'body' => file_get_contents($path),
             'headers' => $this->getUploadHeaders($uploadType)
         ]);
+
+        return $this->returnCollect($response, function (ResponseCollection $collect, ResponseInterface $response) {
+            $collect->setRaw($response->getBody()->getContents())
+                ->setStatusCode(200);
+
+            $data = json_decode($collect->getRaw(), true);
+
+            $collect->setResult($data['code'] === 0)
+                ->setMessage($data['message']);
+
+            if ($collect->getResult()) {
+                $collect->set('url', $data['data']['url']);
+            }
+        });
     }
 
     /**
@@ -64,17 +86,23 @@ abstract class Client extends BaseClient
      * @param string $resource
      * @param string|null $filename
      * @param string|null $savePath
-     * @return bool
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidISPException
      */
     public function download(string $resource, ?string $filename, ?string $savePath)
     {
         $response = $this->getMaterial($resource);
 
-        if ($response instanceof ResponseInterface) {
-            return File::saveFileFromResponse($response, $resource, $savePath, $filename);
-        }
+        if ($response->getStatusCode() === 200) {
+            $filePath = File::saveFileFromResponse($response, $resource, $savePath, $filename);
 
-        return $response;
+            return $this->returnCollect($response, function (ResponseCollection $collect, ResponseInterface $response) use ($filePath) {
+                $collect->setStatusCode($response->getStatusCode())
+                    ->setResult(true)
+                    ->set('file_path', $filePath);
+            });
+        } else {
+            return $this->returnCollect($response, [$this, 'downloadFail']);
+        }
     }
 }

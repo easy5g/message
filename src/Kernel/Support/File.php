@@ -139,12 +139,14 @@ class File
      * @param string $resource
      * @param string|null $savePath
      * @param string|null $filename
-     * @return bool
+     * @return string
      * @throws CommonException
      */
     public static function saveFileFromResponse(ResponseInterface $response, string $resource, ?string $savePath, ?string $filename)
     {
         empty($savePath) && $savePath = '/tmp/easy5G';
+
+        $savePath = rtrim($savePath, '/');
 
         self::mkdir($savePath);
 
@@ -164,10 +166,12 @@ class File
             $filename .= File::getStreamExt($contents);
         }
 
-        if (@file_put_contents($savePath . '/' . $filename, $contents) === false) {
-            throw new CommonException('Failed to save file path:' . $savePath . '/' . $filename);
+        $filePath = $savePath . '/' . $filename;
+
+        if (@file_put_contents($filePath, $contents) === false) {
+            throw new CommonException('Failed to save file path:' . $filePath);
         }
 
-        return true;
+        return $filePath;
     }
 }

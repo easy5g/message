@@ -13,6 +13,7 @@ use Easy5G\Kernel\Exceptions\CommonException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Support\File;
 use Easy5G\Chatbot\Application;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class Client extends BaseClient
@@ -54,6 +55,13 @@ abstract class Client extends BaseClient
      * @return array
      */
     abstract protected function getMultipart(string $path, ?string $thumbnailPath = null): array;
+
+    /**
+     * downloadFail
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    abstract protected function downloadFail(ResponseCollection $collect, ResponseInterface $response);
 
     /**
      * upload
@@ -110,18 +118,24 @@ abstract class Client extends BaseClient
      * @param string $resource
      * @param string|null $filename
      * @param string $savePath
-     * @return bool|string
+     * @return ResponseCollection
      * @throws CommonException
      */
     public function download(string $resource, ?string $filename, ?string $savePath)
     {
         $response = $this->getMaterial($resource);
 
-        if ($response instanceof ResponseInterface) {
-            return File::saveFileFromResponse($response, $resource, $savePath, $filename);
-        }
+        if ($response->getStatusCode() === 200) {
+            $filePath = File::saveFileFromResponse($response, $resource, $savePath, $filename);
 
-        return $response;
+            return $this->returnCollect($response, function (ResponseCollection $collect, ResponseInterface $response) use ($filePath) {
+                $collect->setStatusCode($response->getStatusCode())
+                    ->setResult(true)
+                    ->set('file_path', $filePath);
+            });
+        } else {
+            return $this->returnCollect($response, [$this, 'downloadFail']);
+        }
     }
 
     /**

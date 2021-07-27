@@ -11,6 +11,7 @@ namespace Easy5G\Csp\Customer;
 use Easy5G\Csp\Application;
 use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -37,7 +38,7 @@ trait Common
     /**
      * getMaterial
      * @param string $resource
-     * @return ResponseInterface|string
+     * @return ResponseInterface
      * @throws BindingResolutionException|InvalidISPException
      */
     protected function getMaterial(string $resource)
@@ -61,18 +62,35 @@ trait Common
             throw new BadRequestException('Request to ' . $resource . ' return ' . $httpStatusCode . ' HTTP Status Code', $httpStatusCode);
         }
 
+        //如果是以{打头则认为是json
         if ($response->getBody()->read(1) === '{') {
             $response->getBody()->rewind();
 
-            $content = $response->getBody()->getContents();
-
-            if (json_decode($content,true)) {
-                return $content;
-            }
+            $response->withHeader('Content-Type','application/json')->withStatus(404);
+        }else{
+            $response->withoutHeader('Content-Type');
         }
 
         $response->getBody()->rewind();
 
         return $response;
+    }
+
+    /**
+     * downloadFail
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function downloadFail(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $raw = $response->getBody()->getContents();
+
+        $data = json_decode($raw, true);
+
+        $collect->setStatusCode(200)
+            ->setRaw($raw)
+            ->setResult(false)
+            ->setCode($data['code'])
+            ->setMessage($data['message']);
     }
 }
