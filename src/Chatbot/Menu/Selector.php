@@ -9,10 +9,12 @@ namespace Easy5G\Chatbot\Menu;
 
 
 use Easy5G\Kernel\Contracts\ChatbotMenuInterface;
+use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Chatbot\Application;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class Selector extends ISPSelector
@@ -71,11 +73,11 @@ class Selector extends ISPSelector
 
     /**
      * create
-     * @param string|ChatbotMenuInterface $menu
+     * @param $menu
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
-     * @throws BindingResolutionException|InvalidISPException
+     * @return ResponseCollection
+     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
      */
     public function create($menu, ?string $ISP = null, ?string $url = null)
     {
@@ -94,7 +96,6 @@ class Selector extends ISPSelector
             $menu = $this->app->chatbotMenuFactory->create($menu);
         }
 
-        /** @var Common $client */
         return $client->create($menu);
     }
 }

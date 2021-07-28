@@ -12,6 +12,7 @@ use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Exceptions\MenuException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class SelectorTest extends TestCase
@@ -80,11 +81,17 @@ class SelectorTest extends TestCase
 
         $stub = $this->createMock(HttpClient::class);
 
-        $stub->method('post')->willReturn($mockData);
+        $stub->method('post')->willReturn(new Response(200, [], $mockData));
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame($mockData, $app->menu->create($buttons, Const5G::CT));
+        $collect = $app->menu->create($buttons, Const5G::CT);
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertTrue($collect->getResult());
+
+        $this->assertSame($mockData, $collect->getRaw());
 
         $this->expectException(InvalidISPException::class);
 
@@ -103,7 +110,7 @@ class SelectorTest extends TestCase
 
         $mockData = '{"errorCode": 0,"errorMessage": "success"}';
 
-        $stub->method('post')->willReturn($mockData);
+        $stub->method('post')->willReturn(new Response(200, [], $mockData));
 
         $app->instance('httpClient', $stub);
 

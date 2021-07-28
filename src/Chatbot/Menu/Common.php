@@ -9,31 +9,36 @@ namespace Easy5G\Chatbot\Menu;
 
 
 use Easy5G\Kernel\Contracts\ChatbotMenuInterface;
-use Easy5G\Kernel\Exceptions\InvalidISPException;
-use Easy5G\Chatbot\Application;
-use Illuminate\Contracts\Container\BindingResolutionException;
+use Easy5G\Kernel\Support\ResponseCollection;
+use Psr\Http\Message\ResponseInterface;
 
 trait Common
 {
     /**
-     * create
+     * getCreateRequestData
      * @param ChatbotMenuInterface $buttons
-     * @return string
-     * @throws BindingResolutionException|InvalidISPException
+     * @return array
      */
-    public function create(ChatbotMenuInterface $buttons)
+    protected function getCreateRequestData(ChatbotMenuInterface $buttons): array
     {
-        /** @var Application $app */
-        $app = $this->app;
-
-        return $app->httpClient->post($this->getCurrentUrl('create'), [
+        return [
             'json' => $buttons->toJson(),
             'headers' => [
-                'Authorization' => $app->access_token->getToken(),
+                'Authorization' => $this->app->access_token->getToken(),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ]
-        ]);
+        ];
+    }
+
+    /**
+     * createResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function createResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->ctBaseResponse(...func_get_args());
     }
 }
