@@ -12,6 +12,7 @@ use Easy5G\Factory;
 use Easy5G\Kernel\Exceptions\CommonException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -123,7 +124,7 @@ class SelectorTest extends TestCase
 
         $media = 'http://127.0.0.1:8355/README.md';
 
-        $stubCt->method('delete')->willReturn($successRes)->with(
+        $stubCt->method('delete')->willReturn(new Response(200, [], $successRes))->with(
             $this->stringContains('delete'),
             $this->callback(function ($options) use ($media) {
                 return $options['headers']['url'] === $media;
@@ -132,15 +133,23 @@ class SelectorTest extends TestCase
 
         $ct->instance('httpClient', $stubCt);
 
-        $this->assertSame($successRes, $ct->material->delete($media));
+        $collect = $ct->material->delete($media);
+
+        $this->assertSame($successRes, $collect->getRaw());
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertSame(0, $collect->getCode());
+
+        $this->assertTrue($collect->getResult());
+
+        $this->assertSame('perm', $collect->get('deleteMode'));
 
         $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $stuCm = $this->createMock(HttpClient::class);
 
-        $successRes = '{"msg":"success","code":"0"}';
-
-        $stuCm->method('delete')->willReturn($successRes)->with(
+        $stuCm->method('delete')->willReturn(new Response(204, [], ''))->with(
             $this->anything(),
             $this->callback(function ($options) use ($media) {
                 return $options['headers']['tid'] === $media &&
@@ -150,7 +159,13 @@ class SelectorTest extends TestCase
 
         $cm->instance('httpClient', $stuCm);
 
-        $this->assertSame($successRes, $cm->material->delete($media));
+        $collect = $cm->material->delete($media);
+
+        $this->assertSame('', $collect->getRaw());
+
+        $this->assertSame(204, $collect->getStatusCode());
+
+        $this->assertTrue($collect->getResult());
     }
 
     public function testUpload()
@@ -161,13 +176,13 @@ class SelectorTest extends TestCase
 
         $failRes = '{"errorCode":40005,"errorMessage":"invalid media type"}';
 
-        $successRes = '{"fileInfo":[{"url":http://124.127.121.100/temp/src/2020062217asdfkjaoskd/836ee/view/37,3c3504f6e4cc6c5274f0.jpg","fileName":"AA.jpg","contentType":"image/jpg","fileSize":22347,"until":"2017-04-25T12:17:07Z"}],"fileCount":100,"totalCount":300,"errorCode":0}';
+        $successRes = '{"fileInfo":[{"url":"http://124.127.121.100/temp/src/2020062217asdfkjaoskd/836ee/view/37,3c3504f6e4cc6c5274f0.jpg","fileName":"AA.jpg","contentType":"image/jpg","fileSize":22347,"until":"2017-04-25T12:17:07Z"}],"fileCount":100,"totalCount":300,"errorCode":0}';
 
         $stub->method('post')->willReturn($this->returnCallback(function ($path, $option) use ($failRes, $successRes) {
             if ($option['multipart'][0]['filename'] === 'README.md') {
-                return $failRes;
+                return new Response(200, [], $failRes);
             } else {
-                return $successRes;
+                return new Response(200, [], $successRes);
             }
         }))->with(
             $this->stringContains('upload'),
@@ -180,23 +195,45 @@ class SelectorTest extends TestCase
 
         $ct->instance('httpClient', $stub);
 
-        $this->assertSame($failRes, $ct->material->upload('./README.md'));
+        $collect = $ct->material->upload('./README.md');
 
-        $this->assertSame($successRes, $ct->material->upload('./LICENSE'));
+        $this->assertInstanceOf(ResponseCollection::class, $collect);
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertSame(40005, $collect->getCode());
+
+        $this->assertSame('invalid media type', $collect->getMessage());
+
+        $this->assertFalse($collect->getResult());
+
+        $this->assertSame($failRes, $collect->getRaw());
+
+        $collect = $ct->material->upload('./LICENSE');
+
+        $this->assertSame($successRes, $collect->getRaw());
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertSame(0, $collect->getCode());
+
+        $this->assertTrue($collect->getResult());
+
+        $this->assertSame('http://124.127.121.100/temp/src/2020062217asdfkjaoskd/836ee/view/37,3c3504f6e4cc6c5274f0.jpg', $collect->get('fileInfo.0.url'));
 
         $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
 
         $stub = $this->createMock(HttpClient::class);
 
-        $successRes = '{"msg":"success","code":"0","tid":"565397473954299904"}';
+        $successRes = '{"msg":"请求成功","code":"00000"}';
 
         $failRes = '{"msg":"chatbotId 错误","code":"10005"}';
 
         $stub->method('post')->willReturn($this->returnCallback(function ($path, $option) use ($failRes, $successRes) {
             if ($option['multipart'][0]['filename'] === 'README.md') {
-                return $failRes;
+                return new Response(200, [], $failRes);
             } else {
-                return $successRes;
+                return new Response(200, ['tid' => '565397473954299904'], $successRes);
             }
         }))->with(
             $this->anything(),
@@ -209,9 +246,31 @@ class SelectorTest extends TestCase
 
         $cm->instance('httpClient', $stub);
 
-        $this->assertSame($failRes, $cm->material->upload('./README.md'));
+        $collect = $cm->material->upload('./README.md');
 
-        $this->assertSame($successRes, $cm->material->upload('./LICENSE'));
+        $this->assertInstanceOf(ResponseCollection::class, $collect);
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertSame("10005", $collect->getCode());
+
+        $this->assertSame('chatbotId 错误', $collect->getMessage());
+
+        $this->assertFalse($collect->getResult());
+
+        $this->assertSame($failRes, $collect->getRaw());
+
+        $collect = $cm->material->upload('./LICENSE');
+
+        $this->assertSame($successRes, $collect->getRaw());
+
+        $this->assertSame(200, $collect->getStatusCode());
+
+        $this->assertSame('00000', $collect->getCode());
+
+        $this->assertTrue($collect->getResult());
+
+        $this->assertSame('565397473954299904', $collect->get('tid'));
 
         $this->expectException(CommonException::class);
 

@@ -74,7 +74,6 @@ abstract class BaseClient
             return $thirdUrl;
         }
 
-        /** @var App $app */
         $app = $this->app;
 
         $config = $app->config->get($this->serviceProvider);
@@ -127,17 +126,49 @@ abstract class BaseClient
     /**
      * returnCollect
      * @param ResponseInterface $response
-     * @param callable $callback
+     * @param callable|null $callback
      * @return ResponseCollection
      */
     protected function returnCollect(ResponseInterface $response, ?callable $callback = null)
     {
         $collect = new ResponseCollection();
 
-        if (!empty($callback)) {
+        if (empty($callback)) {
+            $collect->parseResponse($response);
+        }else{
             $callback($collect, $response);
         }
 
         return $collect;
+    }
+
+    /**
+     * ctBaseResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function ctBaseResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $raw = $response->getBody()->getContents();
+
+        $data = json_decode($raw, true);
+
+        $collect->setStatusCode($response->getStatusCode())
+            ->setRaw($raw)
+            ->setCode($data['errorCode'])
+            ->setMessage($data['errorMessage'] ?? '');
+
+        if ($data['errorCode'] === 0) {
+            $collect->setResult(true);
+
+            unset($data['errorCode']);
+            unset($data['errorMessage']);
+
+            foreach ($data as $key => $val) {
+                $collect->set($key, $val);
+            }
+        } else {
+            $collect->setResult(false);
+        }
     }
 }

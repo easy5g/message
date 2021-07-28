@@ -49,6 +49,21 @@ abstract class Client extends BaseClient
     abstract protected function getMaterial(string $resource);
 
     /**
+     * uploadResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    abstract protected function uploadResponse(ResponseCollection $collect, ResponseInterface $response);
+
+    /**
+     * deleteResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     * @return mixed
+     */
+    abstract protected function deleteResponse(ResponseCollection $collect, ResponseInterface $response);
+
+    /**
      * getMultipart
      * @param string $path
      * @param string|null $thumbnailPath
@@ -67,7 +82,7 @@ abstract class Client extends BaseClient
      * upload
      * @param string $path
      * @param string|null $thumbnailPath
-     * @return string
+     * @return ResponseCollection
      * @throws CommonException|InvalidConfigException
      */
     public function upload(string $path, ?string $thumbnailPath = null)
@@ -94,13 +109,13 @@ abstract class Client extends BaseClient
             fclose($fileInfo['content']);
         }
 
-        return $response;
+        return $this->returnCollect($response, [$this, 'uploadResponse']);
     }
 
     /**
      * delete
      * @param string $media
-     * @return string
+     * @return ResponseCollection
      * @throws InvalidConfigException
      */
     public function delete(string $media)
@@ -108,9 +123,11 @@ abstract class Client extends BaseClient
         /** @var Application $app */
         $app = $this->app;
 
-        return $app->httpClient->delete($this->getCurrentUrl('delete'), [
+        $response = $app->httpClient->delete($this->getCurrentUrl('delete'), [
             'headers' => $this->getDeleteHeaders($media)
-        ]);
+        ], [200, 204]);
+
+        return $this->returnCollect($response,[$this,'deleteResponse']);
     }
 
     /**

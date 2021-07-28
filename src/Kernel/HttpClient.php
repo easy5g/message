@@ -36,42 +36,42 @@ class HttpClient implements HttpClientInterface
      * post
      * @param string $url
      * @param array $options
-     * @param bool $responseInstance
-     * @return ResponseInterface|string
+     * @param int[] $acceptStatusCode
+     * @return ResponseInterface
      */
-    public function post($url, $options = [], $responseInstance = false)
+    public function post($url, $options = [], $acceptStatusCode = [200])
     {
         $options['timeout'] = 2;
 
-        return $this->request('POST', $url, $options, $responseInstance);
+        return $this->request('POST', $url, $options, $acceptStatusCode);
     }
 
     /**
      * get
      * @param string $url
      * @param array $options
-     * @param bool $responseInstance
-     * @return ResponseInterface|string
+     * @param int[] $acceptStatusCode
+     * @return ResponseInterface
      */
-    public function get($url, $options = [], $responseInstance = false)
+    public function get($url, $options = [], $acceptStatusCode = [200])
     {
         $options['timeout'] = 2;
 
-        return $this->request('GET', $url, $options, $responseInstance);
+        return $this->request('GET', $url, $options, $acceptStatusCode);
     }
 
     /**
      * delete
      * @param $url
      * @param array $options
-     * @param bool $responseInstance
-     * @return ResponseInterface|string
+     * @param int[] $acceptStatusCode
+     * @return ResponseInterface
      */
-    public function delete($url, $options = [], $responseInstance = false)
+    public function delete($url, $options = [], $acceptStatusCode = [200])
     {
         $options['timeout'] = 2;
 
-        return $this->request('DELETE', $url, $options, $responseInstance);
+        return $this->request('DELETE', $url, $options, $acceptStatusCode);
     }
 
     /**
@@ -79,10 +79,10 @@ class HttpClient implements HttpClientInterface
      * @param $method
      * @param $url
      * @param $options
-     * @param bool $responseInstance
-     * @return ResponseInterface|string
+     * @param int[] $acceptStatusCode
+     * @return ResponseInterface
      */
-    public function request($method, $url, $options, $responseInstance = false)
+    public function request($method, $url, $options, $acceptStatusCode = [200])
     {
         try {
             $response = $this->getClient()->request($method, $url, $options);
@@ -90,16 +90,12 @@ class HttpClient implements HttpClientInterface
             throw new BadRequestException($e->getMessage());
         }
 
-        if ($responseInstance) {
-            return $response;
-        }
-
         $httpStatusCode = $response->getStatusCode();
 
-        if ($httpStatusCode !== 200) {
+        if (!in_array($httpStatusCode, $acceptStatusCode)) {
             throw new BadRequestException($method . ' request to ' . $url . ' return ' . $httpStatusCode . ' HTTP Status Code', $httpStatusCode);
         }
 
-        return $response->getBody()->getContents();
+        return $response;
     }
 }

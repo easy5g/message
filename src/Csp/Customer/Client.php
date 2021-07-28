@@ -73,7 +73,7 @@ abstract class Client extends BaseClient
             $data = json_decode($collect->getRaw(), true);
 
             $collect->setResult($data['code'] === 0)
-                ->setMessage($data['message']);
+                ->setMessage($data['message'] ?? '');
 
             if ($collect->getResult()) {
                 $collect->set('url', $data['data']['url']);

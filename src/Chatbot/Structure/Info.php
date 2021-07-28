@@ -8,6 +8,7 @@
 namespace Easy5G\Chatbot\Structure;
 
 
+use Easy5G\Kernel\Contracts\InfoInterface;
 use Easy5G\Kernel\Support\Collection;
 
 /**
@@ -42,7 +43,7 @@ use Easy5G\Kernel\Support\Collection;
  * @property int $version
  * @property string $menu
  */
-class Info extends Collection
+class Info extends Collection implements InfoInterface
 {
     /**
      * @var string[] 可以设置的字段名

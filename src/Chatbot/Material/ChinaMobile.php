@@ -23,8 +23,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class ChinaMobile extends Client
 {
-    protected $uploadUrl = '%s/vg2/messaging/Content';
-    protected $deleteUrl = '%s/vg2/messaging/Content';
+    protected $uploadUrl = '%s/Content';
+    protected $deleteUrl = '%s/Content';
     protected $downloadUrl = '%s/vg2/messaging/Content/downLoadRes';
 
     public $serviceProvider = Const5G::CM;
@@ -110,6 +110,29 @@ class ChinaMobile extends Client
     }
 
     /**
+     * uploadResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function uploadResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $raw = $response->getBody()->getContents();
+
+        $data = json_decode($raw, true);
+
+        $collect->setStatusCode($response->getStatusCode())
+            ->setRaw($raw)
+            ->setCode($data['code'])
+            ->setMessage($data['msg'] ?? '');
+
+        if ($data['code'] === '00000') {
+            $collect->setResult(true)->set('tid', $response->getHeaderLine('tid'));
+        } else {
+            $collect->setResult(false);
+        }
+    }
+
+    /**
      * getMaterial
      * @param string $resource
      * @return ResponseInterface
@@ -126,13 +149,7 @@ class ChinaMobile extends Client
                 'Authorization' => $app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
-        ], true);
-
-        $httpStatusCode = $response->getStatusCode();
-
-        if (!in_array($httpStatusCode, [200, 404, 410])) {
-            throw new BadRequestException('Request to ' . $resource . ' return ' . $httpStatusCode . ' HTTP Status Code', $httpStatusCode);
-        }
+        ], [200, 404, 410]);
 
         return $response;
     }
@@ -176,5 +193,15 @@ class ChinaMobile extends Client
         }
 
         return new Response('', 200);
+    }
+
+    /**
+     * deleteResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function deleteResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $collect->parseResponse($response)->setResult(true);
     }
 }

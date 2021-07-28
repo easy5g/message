@@ -8,14 +8,16 @@
 namespace Easy5G\Chatbot\Info;
 
 
-use Easy5G\Kernel\Exceptions\InvalidInfoException;
+use Easy5G\Kernel\Contracts\InfoInterface;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Exceptions\BadResponseException;
 use Easy5G\Chatbot\Application;
 use Easy5G\Chatbot\Auth\Common as Auth;
 use Easy5G\Chatbot\Structure\Info;
 use Easy5G\Kernel\Support\Collection;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 trait Common
@@ -48,31 +50,21 @@ trait Common
     }
 
     /**
-     * update
-     * @param Info|array $info
-     * @return string
-     * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
+     * getUpdateRequestData
+     * @param InfoInterface $info
+     * @return array
      */
-    public function update($info)
+    protected function getUpdateRequestData(InfoInterface $info): array
     {
-        /** @var Application $app */
-        $app = $this->app;
-
-        if (is_array($info)) {
-            $info = $app->chatbotInfoFactory->create($info);
-        } elseif (!$info instanceof Info) {
-            throw new InvalidInfoException('$info must be an array or instanceof Info Easy5G\Chatbot\Structure\Info');
-        }
-
-        return $app->httpClient->post($this->getCurrentUrl('update'), [
+        return [
             'json' => $info->toJson(),
             'headers' => [
-                'Authorization' => $app->access_token->getToken(),
+                'Authorization' => $this->app->access_token->getToken(),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json',
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ]
-        ]);
+        ];
     }
 
     /**
@@ -82,7 +74,8 @@ trait Common
      * @throws BindingResolutionException|InvalidISPException
      */
     public function notify($callback)
-    {        /** @var Application $app */
+    {
+        /** @var Application $app */
         $app = $this->app;
 
         if (Auth::verify($app) && !is_null($callback)) {
@@ -90,5 +83,15 @@ trait Common
         }
 
         return new Response('', 200);
+    }
+
+    /**
+     * updateResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function updateResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->ctBaseResponse(...func_get_args());
     }
 }

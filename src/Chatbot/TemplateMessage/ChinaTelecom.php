@@ -8,7 +8,11 @@
 namespace Easy5G\Chatbot\TemplateMessage;
 
 
+use Easy5G\Kernel\Support\Const5G;
+
 class ChinaTelecom extends Client
 {
     use Common;
+
+    public $serviceProvider = Const5G::CT;
 }

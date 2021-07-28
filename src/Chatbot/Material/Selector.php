@@ -31,7 +31,7 @@ class Selector extends ISPSelector
      * @param string|null $thumbnailPath
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidISPException|InvalidConfigException
      */
     public function uploadImage(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
@@ -45,7 +45,7 @@ class Selector extends ISPSelector
      * @param string|null $thumbnailPath
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidISPException|InvalidConfigException
      */
     public function uploadVoice(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
@@ -59,7 +59,7 @@ class Selector extends ISPSelector
      * @param string|null $thumbnailPath
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidISPException|InvalidConfigException
      */
     public function uploadVideo(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
@@ -73,7 +73,7 @@ class Selector extends ISPSelector
      * @param string|null $thumbnailPath
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|CommonException|InvalidConfigException|InvalidISPException
      */
     public function upload(string $path, ?string $thumbnailPath = null, ?string $ISP = null, ?string $url = null)
@@ -97,7 +97,7 @@ class Selector extends ISPSelector
      * @param string $media
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
      */
     public function delete(string $media, ?string $ISP = null, ?string $url = null)

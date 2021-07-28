@@ -12,6 +12,8 @@ use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Chatbot\Structure\Info;
+use Easy5G\Kernel\Support\ResponseCollection;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
 class SelectorTest extends TestCase
@@ -34,7 +36,7 @@ class SelectorTest extends TestCase
 
         $stub = $this->createMock(HttpClient::class);
 
-        $stub->method('post')->willReturn(json_encode($mockData))->with(
+        $stub->method('post')->willReturn(new Response(200, [], json_encode($mockData)))->with(
             $this->stringContains('optionals'),
             $this->callback(function ($options) use ($updateInfo) {
                 return json_encode($updateInfo) === $options['json'];
@@ -43,7 +45,17 @@ class SelectorTest extends TestCase
 
         $app->instance('httpClient', $stub);
 
-        $this->assertSame(json_encode($mockData), $app->info->update($app->chatbotInfoFactory->create(['provider' => 'test11'], Const5G::CT)));
+        $response = $app->info->update($app->chatbotInfoFactory->create(['provider' => 'test11'], Const5G::CT));
+
+        $this->assertInstanceOf(ResponseCollection::class, $response);
+
+        $this->assertSame(200, $response->getStatusCode());
+
+        $this->assertTrue($response->getResult());
+
+        $this->assertSame($mockData['errorCode'], $response->getCode());
+
+        $this->assertSame($mockData['errorMessage'], $response->getMessage());
 
         $this->expectException(InvalidISPException::class);
 

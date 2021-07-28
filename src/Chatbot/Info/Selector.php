@@ -8,12 +8,12 @@
 namespace Easy5G\Chatbot\Info;
 
 
-use Easy5G\Kernel\Exceptions\InvalidInfoException;
+use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
-use Easy5G\Kernel\Exceptions\BadResponseException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Chatbot\Structure\Info;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -55,11 +55,11 @@ class Selector extends ISPSelector
 
     /**
      * update
-     * @param array|Info $info
+     * @param $info
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
-     * @throws BindingResolutionException|InvalidISPException|InvalidInfoException|BadResponseException
+     * @return ResponseCollection
+     * @throws BindingResolutionException|InvalidISPException|InvalidConfigException
      */
     public function update($info, ?string $ISP = null, ?string $url = null)
     {
@@ -74,7 +74,6 @@ class Selector extends ISPSelector
             $client->setThirdUrl($url, 'update');
         }
 
-        /** @var Common $client */
         return $client->update($info);
     }
 

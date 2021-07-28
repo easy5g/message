@@ -8,7 +8,7 @@
 namespace Easy5G\Kernel\Support;
 
 
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class ResponseCollection extends Collection
 {
@@ -20,16 +20,14 @@ class ResponseCollection extends Collection
 
     /**
      * parseResponse
-     * @param $response
+     * @param ResponseInterface $response
      * @return ResponseCollection
      */
-    public function parseResponse($response)
+    public function parseResponse(ResponseInterface $response)
     {
-        if ($response instanceof Response) {
-            $this->setStatusCode($response->getStatusCode());
+        $this->setStatusCode($response->getStatusCode());
 
-            $this->setRaw($response->getBody()->getContents());
-        }
+        $this->setRaw($response->getBody()->getContents());
 
         return $this;
     }
@@ -89,7 +87,9 @@ class ResponseCollection extends Collection
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        if (!empty($message)) {
+            $this->message = $message;
+        }
 
         return $this;
     }

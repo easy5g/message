@@ -133,6 +133,21 @@ trait Common
     }
 
     /**
+     * uploadResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function uploadResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->ctBaseResponse(...func_get_args());
+    }
+
+    protected function deleteResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->ctBaseResponse(...func_get_args());
+    }
+
+    /**
      * getMaterial
      * @param string $resource
      * @return ResponseInterface
@@ -149,7 +164,7 @@ trait Common
                 'url' => $resource,
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
-        ], true);
+        ]);
 
         $httpStatusCode = $response->getStatusCode();
 
@@ -180,7 +195,7 @@ trait Common
             ->setRaw($raw)
             ->setResult(false)
             ->setCode($data['errorCode'])
-            ->setMessage($data['errorMessage']);
+            ->setMessage($data['errorMessage'] ?? '');
     }
 
     /**
