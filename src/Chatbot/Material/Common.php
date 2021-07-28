@@ -139,12 +139,12 @@ trait Common
      */
     protected function uploadResponse(ResponseCollection $collect, ResponseInterface $response)
     {
-        $this->ctBaseResponse(...func_get_args());
+        $this->utBaseResponse(...func_get_args());
     }
 
     protected function deleteResponse(ResponseCollection $collect, ResponseInterface $response)
     {
-        $this->ctBaseResponse(...func_get_args());
+        $this->utBaseResponse(...func_get_args());
     }
 
     /**

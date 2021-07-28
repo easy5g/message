@@ -92,6 +92,6 @@ trait Common
      */
     protected function updateResponse(ResponseCollection $collect, ResponseInterface $response)
     {
-        $this->ctBaseResponse(...func_get_args());
+        $this->utBaseResponse(...func_get_args());
     }
 }

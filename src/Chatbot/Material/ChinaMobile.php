@@ -8,7 +8,6 @@
 namespace Easy5G\Chatbot\Material;
 
 
-use Easy5G\Kernel\Exceptions\BadRequestException;
 use Easy5G\Kernel\Exceptions\InvalidArgumentException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
@@ -25,7 +24,6 @@ class ChinaMobile extends Client
 {
     protected $uploadUrl = '%s/Content';
     protected $deleteUrl = '%s/Content';
-    protected $downloadUrl = '%s/vg2/messaging/Content/downLoadRes';
 
     public $serviceProvider = Const5G::CM;
 

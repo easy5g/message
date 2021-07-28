@@ -12,6 +12,7 @@ use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\ISPSelector;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class Selector extends ISPSelector
@@ -27,8 +28,8 @@ class Selector extends ISPSelector
      * @param array $data
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
-     * @throws BindingResolutionException|InvalidISPException
+     * @return ResponseCollection
+     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
      */
     public function batchSend(array $data, ?string $ISP = null, ?string $url = null)
     {
@@ -51,7 +52,7 @@ class Selector extends ISPSelector
      * @param array $data
      * @param string|null $ISP
      * @param string|null $url
-     * @return string
+     * @return ResponseCollection
      * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
      */
     public function batchReply(array $data, ?string $ISP = null, ?string $url = null)

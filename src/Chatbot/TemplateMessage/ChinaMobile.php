@@ -13,57 +13,67 @@ use Easy5G\Kernel\Exceptions\InvalidArgumentException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Const5G;
+use Easy5G\Kernel\Support\ResponseCollection;
 use Easy5G\Kernel\Support\Xml;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Psr\Http\Message\ResponseInterface;
 
 class ChinaMobile extends Client
 {
-    protected $batchSendUrl = '%s/vg2/messaging/messaging/group/template/outbound/%s/requests';
-    protected $batchReplyUrl = '%s/vg2/messaging/messaging/interaction/template/outbound/{chatbotURI}/requests';
+    protected $batchSendUrl = '%s/messaging/group/template/outbound/%s/requests';
+    protected $batchReplyUrl = '%s/messaging/interaction/template/outbound/%s/requests';
     protected $serviceProvider = Const5G::CM;
 
     /**
-     * batchSend
+     * getBatchSendRequestData
      * @param array $data
-     * @return string
-     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
+     * @return array
      */
-    public function batchSend(array $data)
+    protected function getBatchSendRequestData(array $data): array
     {
-        $this->checkBatchData($data, 'send');
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        return $app->httpClient->post($this->getCurrentUrl('batchSend'), [
+        return [
             'headers' => [
-                'Authorization' => $app->access_token->getToken(),
+                'Authorization' => $this->app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
             'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
-        ]);
+        ];
     }
 
     /**
-     * batchReply
+     * getBatchReplyRequestData
      * @param array $data
-     * @return string
-     * @throws BindingResolutionException|InvalidConfigException|InvalidISPException
+     * @return array
      */
-    public function batchReply(array $data)
+    protected function getBatchReplyRequestData(array $data): array
     {
-        $this->checkBatchData($data, 'reply');
-
-        /** @var Application $app */
-        $app = $this->app;
-
-        return $app->httpClient->post($this->getCurrentUrl('batchReply'), [
+        return [
             'headers' => [
-                'Authorization' => $app->access_token->getToken(),
+                'Authorization' => $this->app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
             'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
-        ]);
+        ];
+    }
+
+    /**
+     * batchSendResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function batchSendResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->mBaseResponse(...func_get_args());
+    }
+
+    /**
+     * batchReplyResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function batchReplyResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $this->mBaseResponse(...func_get_args());
     }
 
     /**

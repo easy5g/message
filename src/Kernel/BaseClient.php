@@ -143,11 +143,11 @@ abstract class BaseClient
     }
 
     /**
-     * ctBaseResponse
+     * utBaseResponse
      * @param ResponseCollection $collect
      * @param ResponseInterface $response
      */
-    protected function ctBaseResponse(ResponseCollection $collect, ResponseInterface $response)
+    protected function utBaseResponse(ResponseCollection $collect, ResponseInterface $response)
     {
         $raw = $response->getBody()->getContents();
 
@@ -163,6 +163,36 @@ abstract class BaseClient
 
             unset($data['errorCode']);
             unset($data['errorMessage']);
+
+            foreach ($data as $key => $val) {
+                $collect->set($key, $val);
+            }
+        } else {
+            $collect->setResult(false);
+        }
+    }
+
+    /**
+     * mBaseResponse
+     * @param ResponseCollection $collect
+     * @param ResponseInterface $response
+     */
+    protected function mBaseResponse(ResponseCollection $collect, ResponseInterface $response)
+    {
+        $raw = $response->getBody()->getContents();
+
+        $data = json_decode($raw, true);
+
+        $collect->setStatusCode($response->getStatusCode())
+            ->setRaw($raw)
+            ->setCode($data['code'])
+            ->setMessage($data['msg'] ?? '');
+
+        if ($data['code'] === '00000') {
+            $collect->setResult(true);
+
+            unset($data['code']);
+            unset($data['msg']);
 
             foreach ($data as $key => $val) {
                 $collect->set($key, $val);
