@@ -1,10 +1,11 @@
 <?php
 
-namespace Easy5G\Kernel\Factory;
+namespace Easy5G\Kernel\Factory\Chatbot;
 
 
 use Easy5G\Chatbot\Structure\Info;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
+use Easy5G\Kernel\Factory\Factory;
 use Easy5G\Kernel\Support\Const5G;
 
 /**
@@ -12,9 +13,9 @@ use Easy5G\Kernel\Support\Const5G;
  * Date: 2021/7/21
  * Time: 9:48 上午
  */
-class ChatbotInfoFactory extends Factory
+class InfoFactory extends Factory
 {
-    public $serviceMap = [
+    public static $serviceMap = [
         Const5G::CU => Info::class,
         Const5G::CT => Info::class,
     ];

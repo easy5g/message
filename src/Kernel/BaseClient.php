@@ -135,7 +135,7 @@ abstract class BaseClient
 
         if (empty($callback)) {
             $collect->parseResponse($response);
-        }else{
+        } else {
             $callback($collect, $response);
         }
 
@@ -156,19 +156,14 @@ abstract class BaseClient
         $collect->setStatusCode($response->getStatusCode())
             ->setRaw($raw)
             ->setCode($data['errorCode'])
-            ->setMessage($data['errorMessage'] ?? '');
+            ->setMessage($data['errorMessage'] ?? '')
+            ->setResult($data['errorCode'] === 0);
 
-        if ($data['errorCode'] === 0) {
-            $collect->setResult(true);
+        unset($data['errorCode']);
+        unset($data['errorMessage']);
 
-            unset($data['errorCode']);
-            unset($data['errorMessage']);
-
-            foreach ($data as $key => $val) {
-                $collect->set($key, $val);
-            }
-        } else {
-            $collect->setResult(false);
+        foreach ($data as $key => $val) {
+            $collect->set($key, $val);
         }
     }
 
@@ -186,19 +181,14 @@ abstract class BaseClient
         $collect->setStatusCode($response->getStatusCode())
             ->setRaw($raw)
             ->setCode($data['code'])
-            ->setMessage($data['msg'] ?? '');
+            ->setMessage($data['msg'] ?? '')
+            ->setResult($data['code'] === '00000');
 
-        if ($data['code'] === '00000') {
-            $collect->setResult(true);
+        unset($data['code']);
+        unset($data['msg']);
 
-            unset($data['code']);
-            unset($data['msg']);
-
-            foreach ($data as $key => $val) {
-                $collect->set($key, $val);
-            }
-        } else {
-            $collect->setResult(false);
+        foreach ($data as $key => $val) {
+            $collect->set($key, $val);
         }
     }
 }

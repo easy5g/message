@@ -15,13 +15,13 @@ class ChatbotProvider extends ServiceProvider
 {
     public $singletons = [
         'access_token' => Auth\Selector::class,
-        'server' => Auth\Selector::class,
+        'broadcasting' => Broadcasting\Selector::class,
         'info' => Info\Selector::class,
-        'menu' => Menu\Selector::class,
         'material' => Material\Selector::class,
         'media' => Material\MediaSelector::class,
+        'menu' => Menu\Selector::class,
+        'server' => Auth\Selector::class,
         'template_message' => TemplateMessage\Selector::class,
-        'message' => Message\Selector::class,
     ];
 
     /**

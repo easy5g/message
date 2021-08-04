@@ -22,19 +22,34 @@ abstract class Factory
 
     /**
      * getServiceName 根据ISP获取相应的服务名
-     * @param $ISP
+     * @param string $ISP
      * @return mixed
      * @throws InvalidISPException
      */
-    public function getServiceName($ISP = null)
+    public function getServiceName(string $ISP = null)
     {
         if (
             empty($ISP = $this->app->getDefaultISP($ISP))
-            || !isset($this->serviceMap[$ISP])
+            || !isset(static::$serviceMap[$ISP])
         ) {
             throw new InvalidISPException('Illegal ISP');
         }
 
-        return $this->serviceMap[$ISP];
+        return static::$serviceMap[$ISP];
+    }
+
+    /**
+     * get
+     * @param string $ISP
+     * @param null $data
+     * @return object
+     */
+    public static function get(string $ISP, $data = null)
+    {
+        if (!isset(static::$serviceMap[$ISP])) {
+            throw new InvalidISPException('Illegal ISP');
+        }
+
+        return new static::$serviceMap[$ISP]($data);
     }
 }

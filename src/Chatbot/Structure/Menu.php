@@ -43,6 +43,15 @@ class Menu implements ChatbotMenuInterface
     }
 
     /**
+     * setSuspension
+     * @param bool $suspension
+     */
+    public function setSuspension(bool $suspension)
+    {
+        $this->suspension = $suspension;
+    }
+
+    /**
      * getDisplay
      * @return string
      */
@@ -93,16 +102,30 @@ class Menu implements ChatbotMenuInterface
 
     /**
      * parse
-     * @param string $json
+     * @param string|array $buttons
      * @return Menu
+     * @throws MenuException
      */
-    public function parse(string $json): ChatbotMenuInterface
+    public function parse($buttons): ChatbotMenuInterface
     {
-        $buttonsArr = json_decode($json, true);
+        $menu = new self();
+
+        if (is_array($buttons)) {
+            $buttonsArr = $buttons;
+        } elseif (is_string($buttons)) {
+            $buttonsArr = json_decode($buttons, true);
+        } else {
+            throw new MenuException('Parameters only accept array or string');
+        }
+
         if (isset($buttonsArr['menu']['entries'])) {
             $buttonsArr = $buttonsArr['menu']['entries'];
         } elseif (isset($buttonsArr['entries'])) {
             $buttonsArr = $buttonsArr['entries'];
+        } elseif (isset($buttonsArr['suggestions'])) {
+            $buttonsArr = $buttonsArr['suggestions'];
+
+            $menu->setSuspension(true);
         } elseif (
             $buttonsArr === false ||
             $buttonsArr === null ||
@@ -110,8 +133,6 @@ class Menu implements ChatbotMenuInterface
         ) {
             throw new MenuException('Structural errors');
         }
-
-        $menu = new self();
 
         foreach ($buttonsArr as $buttonInfo) {
             if (isset($buttonInfo['reply']) || isset($buttonInfo['action'])) {
@@ -152,6 +173,25 @@ class Menu implements ChatbotMenuInterface
     public function toJson(): string
     {
         return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * toHtml
+     * @return string
+     */
+    public function toHtml(): string
+    {
+        $json = $this->toJson();
+
+        $contentLen = strlen($json);
+
+        $httpHeaders = "Content-Type:application/vnd.gsma.botsuggestion.v1.0+json\r\n";
+
+        $httpHeaders .= "Content-Disposition:inline;filename=\"Chiplist.lst\"\r\n";
+
+        $httpHeaders .= "Content-Length:{$contentLen}\r\n";
+
+        return $httpHeaders . "\r\n" . $json;
     }
 
     /**

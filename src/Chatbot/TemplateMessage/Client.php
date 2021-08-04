@@ -11,9 +11,7 @@ namespace Easy5G\Chatbot\TemplateMessage;
 use Easy5G\Chatbot\Application;
 use Easy5G\Kernel\BaseClient;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;
-use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\ResponseCollection;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Http\Message\ResponseInterface;
 
 abstract class Client extends BaseClient

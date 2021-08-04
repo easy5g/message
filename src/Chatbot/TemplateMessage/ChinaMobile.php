@@ -31,12 +31,21 @@ class ChinaMobile extends Client
      */
     protected function getBatchSendRequestData(array $data): array
     {
+        $data = [
+            'msg:outboundMessageRequest' => [
+                '@attributes' => [
+                    'xmlns:msg' => 'urn:oma:xml:rest:netapi:messaging:1',
+                ],
+                $data
+            ]
+        ];
+
         return [
             'headers' => [
                 'Authorization' => $this->app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
-            'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
+            'body' => Xml::build($data, ['version' => '1.0', 'encoding' => 'UTF-8'])
         ];
     }
 
@@ -47,12 +56,21 @@ class ChinaMobile extends Client
      */
     protected function getBatchReplyRequestData(array $data): array
     {
+        $data = [
+            'msg:outboundMessageRequest' => [
+                '@attributes' => [
+                    'xmlns:msg' => 'urn:oma:xml:rest:netapi:messaging:1',
+                ],
+                $data
+            ]
+        ];
+
         return [
             'headers' => [
                 'Authorization' => $this->app->access_token->getToken(),
                 'Date' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
             ],
-            'body' => Xml::build($data, 'xml', ['version' => '1.0', 'encoding' => 'UTF-8'], 'msg:outboundMessageRequest', 'xmlns:msg="urn:oma:xml:rest:netapi:messaging:1"')
+            'body' => Xml::build($data, ['version' => '1.0', 'encoding' => 'UTF-8'])
         ];
     }
 

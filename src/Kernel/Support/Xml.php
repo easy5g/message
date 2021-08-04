@@ -8,6 +8,9 @@
 namespace Easy5G\Kernel\Support;
 
 
+use Easy5G\Kernel\Exceptions\InvalidArgumentException;
+use SimpleXMLElement;
+
 class Xml
 {
     /**
@@ -19,7 +22,13 @@ class Xml
     {
         PHP_MAJOR_VERSION < 8 && $backup = libxml_disable_entity_loader(true);
 
-        $result = self::normalize(@simplexml_load_string(self::sanitize($xml), 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_NOCDATA | LIBXML_NOBLANKS));
+        $xml = @simplexml_load_string(self::sanitize($xml), 'SimpleXMLElement', LIBXML_COMPACT | LIBXML_NOCDATA | LIBXML_NOBLANKS);
+
+        if ($xml === false) {
+            return null;
+        }
+
+        $result = self::normalize($xml->children());
 
         PHP_MAJOR_VERSION < 8 && libxml_disable_entity_loader($backup);
 
@@ -30,29 +39,18 @@ class Xml
      * XML encode.
      *
      * @param mixed $data
-     * @param string $root
-     * @param string $item
-     * @param string $attr
-     * @param string $id
-     *
+     * @param string|array $statementAttr
      * @return string
      */
     public static function build(
         $data,
-        $statement = 'xml',
-        $statementAttr = '',
-        $root = 'root',
-        $rootAttr = '',
-        $defaultItem = 'item'
+        $statementAttr = ''
     )
     {
         $statementAttr = self::parseAttr($statementAttr);
-        $rootAttr = self::parseAttr($rootAttr);
 
-        $xml = "<?{$statement}{$statementAttr}?>";
-        $xml .= "<{$root}{$rootAttr}>";
-        $xml .= self::data2Xml($data, $defaultItem);
-        $xml .= "</{$root}>";
+        $xml = "<?xml{$statementAttr}?>";
+        $xml .= self::data2Xml($data);
 
         return $xml;
     }
@@ -99,29 +97,41 @@ class Xml
 
     /**
      * normalize
-     * @param $obj
+     * @param SimpleXMLElement $obj
      * @return array|null
      */
     protected static function normalize($obj)
     {
-        $result = null;
+        $result = $attr = [];
 
-        if (is_object($obj)) {
-            $obj = (array)$obj;
-        }
-
-        if (is_array($obj)) {
+        if ($obj->count() > 0) {
             foreach ($obj as $key => $value) {
-                $res = self::normalize($value);
-
-                if ('@attributes' === $key) {
-                    $result = $res;
+                if (!empty($value->attributes())) {
+                    $attr = (array)$value->attributes();
                 } else {
-                    $result[$key] = $res;
+                    $attr = [];
+                }
+
+                $son = self::normalize($value);
+
+                if (empty($attr)) {
+                    $tmp = $son;
+                } else {
+                    $tmp = $attr + (is_array($son) ? $son : [$son]);
+                }
+
+                if (isset($result[$key])) {
+                    $result[$key] = array_merge([$result[$key]], [$tmp]);
+                } else {
+                    $result[$key] = $tmp;
                 }
             }
         } else {
-            $result = $obj;
+            $result = (array)$obj;
+
+            unset($result['@attributes']);
+
+            $result = $result ? reset($result) : [];
         }
 
         return $result;
@@ -130,55 +140,67 @@ class Xml
     /**
      * data2Xml
      * @param $data
-     * @param string|null $item
      * @param string $parentKey
      * @return string
+     * @throws InvalidArgumentException
      */
-    protected static function data2Xml($data, ?string $item = 'item', ?string $parentKey = '')
+    protected static function data2Xml($data, $parentKey = '')
     {
-        $xml = $attr = '';
+        $xml = '';
 
-        foreach ($data as $key => $val) {
-            is_object($val) && $val = (array)$val;
+        foreach ($data as $key => $value) {
+            if (isset($value['@attributes'])) {
+                $attr = self::parseAttr($value['@attributes']);
 
-            if (empty($parentKey)) {
-                if (is_numeric($key)) {
-                    $key = $item;
-                }
-
-                if (is_array($val)) {
-                    $xml .= self::data2Xml($val, $item, $key);
-                } else {
-                    $xml .= "<{$key}>{$val}</{$key}>";
-                }
+                unset($value['@attributes']);
             } else {
-                if (is_numeric($key)) {
-                    if (is_array($val)) {
-                        foreach ($val as $k => $v) {
-                            if (is_numeric($k)) {
-                                $k = $item;
-                            }
+                $attr = '';
+            }
 
-                            if (is_array($v)) {
-                                $xml .= "<{$parentKey}>" . self::data2Xml($v, $item, $k) . "</{$parentKey}>";
-                            } else {
-                                $xml .= "<{$parentKey}><{$k}>{$v}</{$k}></{$parentKey}>";
-                            }
-                        }
-                    } else {
-                        $xml .= "<{$parentKey}>{$val}</{$parentKey}>";
+            if (is_string($value)) {
+                $xml .= self::createElement($key, $value, $attr);
+            } elseif (count($value) === 1 && is_numeric($k = array_key_last($value)) && is_string($value[$k])) {
+                $xml .= self::createElement($key, $value[$k], $attr);
+            } else {
+                $keys = array_keys($value);
+
+                $isNum = is_numeric(array_key_first($value));
+
+                foreach ($keys as $keyItem) {
+                    if (is_numeric($keyItem) !== $isNum) {
+                        throw new InvalidArgumentException('Missing child element name');
                     }
+                }
+
+                if ($isNum) {
+                    $xml .= self::data2Xml($value, $key);
                 } else {
-                    if (is_array($val)) {
-                        $xml .= "<{$parentKey}>" . self::data2Xml($val, $item, $key) . "</{$parentKey}>";
-                    } else {
-                        $xml .= "<{$parentKey}><{$key}>{$val}</{$key}></{$parentKey}>";
+                    if (is_numeric($key)) {
+                        $key = $parentKey;
                     }
+
+                    $xml .= self::createElement($key, self::data2Xml($value, $key), $attr);
                 }
             }
         }
 
         return $xml;
+    }
+
+    /**
+     * createElement
+     * @param $key
+     * @param $value
+     * @param $attr
+     * @return string
+     */
+    protected static function createElement($key, $value, $attr)
+    {
+        if ($value === '') {
+            return "<{$key}{$attr}/>";
+        }else{
+            return "<{$key}{$attr}>{$value}</{$key}>";
+        }
     }
 
     /**

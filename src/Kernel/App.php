@@ -10,9 +10,8 @@ namespace Easy5G\Kernel;
 use Easy5G\Kernel\Cache\CacheManager;
 use Easy5G\Kernel\Config\Repository;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
-use Easy5G\Kernel\Factory\ChatbotButtonFactory;
-use Easy5G\Kernel\Factory\ChatbotInfoFactory;
-use Easy5G\Kernel\Factory\ChatbotMenuFactory;
+use Easy5G\Kernel\Factory\Chatbot\InfoFactory;
+use Easy5G\Kernel\Factory\Chatbot\MenuFactory;
 use Illuminate\Container\Container;
 use Unit\Kernel\Log\LogManager;
 
@@ -25,9 +24,8 @@ use Unit\Kernel\Log\LogManager;
  * @property CacheManager $cache
  * @property HttpClient $httpClient
  * @property LogManager $log
- * @property ChatbotInfoFactory $chatbotInfoFactory
- * @property ChatbotMenuFactory $chatbotMenuFactory
- * @property ChatbotButtonFactory $chatbotButtonFactory
+ * @property InfoFactory $chatbotInfoFactory
+ * @property MenuFactory $chatbotMenuFactory
  */
 abstract class App extends Container
 {

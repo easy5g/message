@@ -9,9 +9,8 @@ namespace Easy5G\Kernel;
 
 
 use Easy5G\Kernel\Cache\CacheManager;
-use Easy5G\Kernel\Factory\ChatbotButtonFactory;
-use Easy5G\Kernel\Factory\ChatbotMenuFactory;
-use Easy5G\Kernel\Factory\ChatbotInfoFactory;
+use Easy5G\Kernel\Factory\Chatbot\MenuFactory;
+use Easy5G\Kernel\Factory\Chatbot\InfoFactory;
 use Unit\Kernel\Log\LogManager;
 
 class ServiceProvider
@@ -44,8 +43,7 @@ class ServiceProvider
      */
     protected function registerBaseFactory()
     {
-        $this->app->singletonIf('chatbotInfoFactory',ChatbotInfoFactory::class);
-        $this->app->singletonIf('chatbotMenuFactory',ChatbotMenuFactory::class);
-        $this->app->singletonIf('chatbotButtonFactory',ChatbotButtonFactory::class);
+        $this->app->singletonIf('chatbotInfoFactory',InfoFactory::class);
+        $this->app->singletonIf('chatbotMenuFactory',MenuFactory::class);
     }
 }

@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @property Material\Selector material
  * @property Material\MediaSelector media
  * @property TemplateMessage\Selector template_message
- * @property Message\Selector message
+ * @property Broadcasting\Selector broadcasting
  * @property Request request
  */
 class Application extends App

@@ -7,6 +7,7 @@
 
 namespace Unit\Chatbot\Structure;
 
+use Easy5G\Chatbot\Structure\Button;
 use Easy5G\Chatbot\Structure\Menu;
 use Easy5G\Factory;
 use Easy5G\Kernel\Factory\ChatbotMenuFactory;
@@ -39,10 +40,10 @@ class MenuTest extends TestCase
         /** @var Menu $menuInstance */
         $menuInstance = $app->chatbotMenuFactory->create();
 
-        $menuInstance->addButton($app->chatbotButtonFactory->create(json_decode($button1, true)));
+        $menuInstance->addButton(new Button(json_decode($button1, true)));
         $secondMenu = $menuInstance->addMenu($display);
-        $secondMenu->addButton($app->chatbotButtonFactory->create(json_decode($button2, true)));
-        $secondMenu->addButton($app->chatbotButtonFactory->create(json_decode($button3, true)));
+        $secondMenu->addButton(new Button(json_decode($button2, true)));
+        $secondMenu->addButton(new Button(json_decode($button3, true)));
 
         $this->assertSame($menu, $menuInstance->toJson());
     }

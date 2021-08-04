@@ -2,18 +2,19 @@
 /**
  * User: zhouhua
  * Date: 2021/6/29
- * Time: 10:02 上午
+ * Time: 11:45 上午
  */
 
-namespace Easy5G\Chatbot\Message;
+namespace Easy5G\Chatbot\Broadcasting;
 
 
 use Easy5G\Kernel\Support\Const5G;
 
-class ChinaTelecom extends Client
+class ChinaUnicom extends Client
 {
     use Common;
 
     protected $sendUrl = '%s/bot/%s/%s/messages';
-    protected $serviceProvider = Const5G::CT;
+    protected $serviceProvider = Const5G::CU;
+
 }

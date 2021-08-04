@@ -17,6 +17,7 @@ class Button extends Collection
      * create
      * @param array $button
      * @return Button
+     * @throws MenuException
      */
     public static function raw($button)
     {
