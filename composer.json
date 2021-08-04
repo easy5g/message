@@ -25,7 +25,8 @@
     "ext-fileinfo": "*",
     "ext-mbstring": "*",
     "ext-libxml": "*",
-    "ext-simplexml": "*"
+    "ext-simplexml": "*",
+    "ramsey/uuid": "^4.0"
   },
   "autoload": {
     "psr-4": {

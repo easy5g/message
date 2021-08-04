@@ -32,6 +32,12 @@ interface MessageInterface
     public function addSuggestions(Menu $suggestions): void;
 
     /**
+     * addFallback
+     * @param MessageInterface $fallback
+     */
+    public function addFallback(MessageInterface $fallback): void;
+
+    /**
      * getText
      * @param $ISP
      * @return array|string

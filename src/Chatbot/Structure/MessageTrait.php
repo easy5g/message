@@ -8,6 +8,7 @@
 namespace Easy5G\Chatbot\Structure;
 
 
+use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Const5G;
 use Easy5G\Kernel\Support\Xml;
@@ -16,7 +17,9 @@ trait MessageTrait
 {
     /**
      * getContentType
+     * @param null $ISP
      * @return string
+     * @throws InvalidISPException
      */
     public function getContentType($ISP = null): string
     {
@@ -52,6 +55,16 @@ trait MessageTrait
     {
         $this->suggestions = $suggestions;
     }
+
+    /**
+     * addFallback
+     * @param MessageInterface $fallback
+     */
+    public function addFallback(MessageInterface $fallback): void
+    {
+        $this->fallback = $fallback;
+    }
+
 
     /**
      * getText
@@ -125,6 +138,7 @@ trait MessageTrait
 
     /**
      * toHttp
+     * @param $data
      * @return string
      */
     protected function toHttp($data)

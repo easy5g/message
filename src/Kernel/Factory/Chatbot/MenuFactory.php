@@ -18,6 +18,7 @@ use Easy5G\Kernel\Support\Const5G;
 class MenuFactory extends Factory
 {
     public static $serviceMap = [
+        Const5G::CM => Menu::class,
         Const5G::CU => Menu::class,
         Const5G::CT => Menu::class,
     ];

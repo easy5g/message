@@ -25,6 +25,8 @@ class Card implements MessageInterface
 
     /** @var Menu */
     protected $suggestions;
+    /** @var MessageInterface */
+    public $fallback;
 
     /** @var Collection */
     protected $layout;
@@ -87,7 +89,7 @@ class Card implements MessageInterface
      * getToHttpData
      * @return string
      */
-    protected function getToHttpData()
+    public function getToHttpData()
     {
         $this->prepareContentText();
 
@@ -147,14 +149,18 @@ class Card implements MessageInterface
      */
     public function setContent($key, $value = null, $index = 0)
     {
-        if (!isset($this->content[$index])) {
-            $this->content[$index] = new Collection();
-        }
-
         if (is_array($key)) {
             $card = $key;
+
+            if (is_numeric($value)) {
+                $index = $value;
+            }
         } else {
             $card = [$key => $value];
+        }
+
+        if (!isset($this->content[$index])) {
+            $this->content[$index] = new Collection();
         }
 
         foreach ($card as $key => $value) {
@@ -221,7 +227,7 @@ class Card implements MessageInterface
             $card->setContent($contentArr['content']);
         } else {
             foreach ($contentArr['content'] as $index => $content) {
-                $card->setContent($content, null, $index);
+                $card->setContent($content, $index);
             }
         }
 

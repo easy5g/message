@@ -19,10 +19,11 @@ abstract class Client extends BaseClient
 {
     /**
      * getSendRequestData
-     * @param array $data
+     * @param MessageInterface $message
+     * @param array $sendInfo
      * @return array
      */
-    abstract protected function getSendRequestData($message, $sendInfo): array;
+    abstract protected function getSendRequestData(MessageInterface $message,array $sendInfo): array;
 
     /**
      * sendMessageResponse

@@ -16,5 +16,4 @@ class ChinaUnicom extends Client
 
     protected $sendUrl = '%s/bot/%s/%s/messages';
     protected $serviceProvider = Const5G::CU;
-
 }

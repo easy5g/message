@@ -20,6 +20,8 @@ class Text implements MessageInterface
 
     /** @var Menu */
     protected $suggestions;
+    /** @var MessageInterface */
+    public $fallback;
 
     public function __construct(string $content, string $encode = 'utf8')
     {
@@ -32,7 +34,7 @@ class Text implements MessageInterface
      * getToHttpData
      * @return string
      */
-    protected function getToHttpData()
+    public function getToHttpData()
     {
         return $this->contentText;
     }
