@@ -13,6 +13,7 @@ return [
         'cspid' => 'test12345',
         'cspToken' => '123456',
         'serverRoot' => 'http://81.68.104.218:8855',
+        'fileServerRoot' => 'http://81.68.104.218:8855',
     ],
     Const5G::CU => [
         'cspId' => 'cspId-CU',

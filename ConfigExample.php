@@ -9,7 +9,7 @@ use Easy5G\Kernel\Support\Const5G;
 
 return [
     'CM' => [
-        'appid' => 'test12345',
+        'appId' => 'test12345',
         'password' => '123456',
         'chatbotURI' => 'sip:x@163.com',
         'serverRoot' => 'http://81.68.104.218:8855',

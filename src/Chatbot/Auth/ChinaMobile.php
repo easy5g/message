@@ -25,7 +25,7 @@ class ChinaMobile extends Client
         $config = $this->app->config->get($this->serviceProvider);
 
         return [
-            'appid' => $config['appid'],
+            'appId' => $config['appId'],
             'password' => $config['password'],
         ];
     }
@@ -53,7 +53,7 @@ class ChinaMobile extends Client
 
         $sha256 = hash('sha256', $token . $date);
 
-        $base64 = base64_encode($credentials['appid'] . ':' . $sha256);
+        $base64 = base64_encode($credentials['appId'] . ':' . $sha256);
 
         return 'Basic ' . $base64;
     }
