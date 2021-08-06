@@ -184,7 +184,7 @@ class CardContent extends Collection
      */
     public function setTitle(string $title)
     {
-        parent::set('title', $this);
+        parent::set('title', $title);
 
         return $this;
     }
