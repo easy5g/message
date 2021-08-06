@@ -1,0 +1,642 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://www.gsma.com/rcs/chatbot_menu_schema.json",
+  "title": "Root Object",
+  "type": "object",
+  "properties": {
+    "menu": {
+      "title": "Data used for a menu provided by Chatbot to the client",
+      "type": "object",
+      "properties": {
+        "entries": {
+          "$ref": "#/definitions/menus/menuL0"
+        }
+      },
+      "required": [
+        "entries"
+      ]
+    }
+  },
+  "required": [
+    "menu"
+  ],
+  "definitions": {
+    "menus": {
+      "menuL0": {
+        "title": "Top Level menu",
+        "type": "array",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/suggestions/replies/reply"
+            },
+            {
+              "$ref": "#/definitions/suggestions/actions/action"
+            },
+            {
+              "$ref": "#/definitions/menus/menuL1"
+            }
+          ]
+        },
+        "minItems": 1,
+        "maxItems": 5,
+        "additionalItems": false
+      },
+      "menuL1": {
+        "title": "First level sub menu.",
+        "type": "object",
+        "properties": {
+          "menu": {
+            "type": "object",
+            "properties": {
+              "displayText": {
+                "title": "Label to show for menu in Top Level menu.",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 25
+              },
+              "entries": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/suggestions/replies/reply"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/action"
+                    },
+                    {
+                      "$ref": "#/definitions/menus/menuL2"
+                    }
+                  ]
+                },
+                "minItems": 1,
+                "maxItems": 5,
+                "additionalItems": false
+              }
+            },
+            "required": [
+              "displayText",
+              "entries"
+            ]
+          }
+        },
+        "required": [
+          "menu"
+        ]
+      },
+      "menuL2": {
+        "title": "Second level sub menu.",
+        "type": "object",
+        "properties": {
+          "menu": {
+            "type": "object",
+            "properties": {
+              "displayText": {
+                "title": "Label to show for menu in Level 1 menu.",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 25
+              },
+              "entries": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/suggestions/replies/reply"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/action"
+                    }
+                  ]
+                },
+                "minItems": 1,
+                "maxItems": 5,
+                "additionalItems": false
+              }
+            },
+            "required": [
+              "displayText",
+              "entries"
+            ]
+          }
+        },
+        "required": [
+          "menu"
+        ]
+      }
+    },
+    "suggestionFragments": {
+      "postback": {
+        "title": "Definition of data to be posted back from UE to chatbot.",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "data"
+        ]
+      }
+    },
+    "suggestions": {
+      "suggestion": {
+        "title": "Common base definition for suggested replies and suggested actions.",
+        "type": "object",
+        "properties": {
+          "displayText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 25
+          },
+          "postback": {
+            "$ref": "#/definitions/suggestionFragments/postback"
+          }
+        },
+        "required": [
+          "displayText"
+        ]
+      },
+      "replies": {
+        "reply": {
+          "title": "Definition of a suggested reply.",
+          "type": "object",
+          "properties": {
+            "reply": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/suggestions/suggestion"
+                }
+              ]
+            }
+          },
+          "required": [
+            "reply"
+          ]
+        }
+      },
+      "actions": {
+        "action": {
+          "title": "Common base definition of a suggested action.",
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "object",
+              "allOf": [
+                {
+                  "$ref": "#/definitions/suggestions/suggestion"
+                },
+                {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/suggestions/actions/urlAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/dialerAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/mapAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/calendarAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/composeAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/deviceAction"
+                    },
+                    {
+                      "$ref": "#/definitions/suggestions/actions/settingsAction"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "action"
+          ]
+        },
+        "urlAction": {
+          "title": "Suggested actions to interact a website or deep app link.",
+          "properties": {
+            "urlAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "openUrl": {
+                      "type": "object",
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "application": {
+                              "type": "string",
+                              "enum": [
+                                "browser"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "url",
+                            "application"
+                          ]
+                        },
+                        {
+                          "properties": {
+                            "url": {
+                              "type": "string",
+                              "format": "uri"
+                            },
+                            "application": {
+                              "type": "string",
+                              "enum": [
+                                "webview"
+                              ]
+                            },
+                            "viewMode": {
+                              "type": "string",
+                              "enum": [
+                                "full",
+                                "half",
+                                "tall"
+                              ]
+                            },
+                            "parameters": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 200
+                            }
+                          },
+                          "required": [
+                            "url",
+                            "application"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "openUrl"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "urlAction"
+          ]
+        },
+        "dialerAction": {
+          "title": "Suggested actions for interacting with a phone number.",
+          "properties": {
+            "dialerAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "dialPhoneNumber": {
+                      "type": "object",
+                      "properties": {
+                        "phoneNumber": {
+                          "type": "string"
+                        },
+                        "fallbackUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "phoneNumber"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "dialPhoneNumber"
+                  ]
+                },
+                {
+                  "properties": {
+                    "dialEnrichedCall": {
+                      "type": "object",
+                      "properties": {
+                        "phoneNumber": {
+                          "type": "string"
+                        },
+                        "subject": {
+                          "type": "string",
+                          "maxLength": 60
+                        },
+                        "fallbackUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "phoneNumber"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "dialEnrichedCall"
+                  ]
+                },
+                {
+                  "properties": {
+                    "dialVideoCall": {
+                      "type": "object",
+                      "properties": {
+                        "phoneNumber": {
+                          "type": "string"
+                        },
+                        "fallbackUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "phoneNumber"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "dialVideoCall"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "dialerAction"
+          ]
+        },
+        "mapAction": {
+          "title": "Suggested actions for interacting with a location on a map.",
+          "properties": {
+            "mapAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "showLocation": {
+                      "title": "Shows a given location on a map.",
+                      "type": "object",
+                      "properties": {
+                        "location": {
+                          "type": "object",
+                          "properties": {
+                            "latitude": {
+                              "type": "number"
+                            },
+                            "longitude": {
+                              "type": "number"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 100
+                            },
+                            "query": {
+                              "title": "Search for location(s) by query",
+                              "description": "Search is based on user's current location",
+                              "examples": [
+                                "restaurants",
+                                "GSMA Head Office, 25 Walbrook, London, UK"
+                              ],
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 200
+                            }
+                          },
+                          "oneOf": [
+                            {
+                              "required": [
+                                "latitude",
+                                "longitude"
+                              ]
+                            },
+                            {
+                              "required": [
+                                "query"
+                              ]
+                            }
+                          ]
+                        },
+                        "fallbackUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "location"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "showLocation"
+                  ]
+                },
+                {
+                  "properties": {
+                    "requestLocationPush": {
+                      "title": "One-time request to send a geo location push from UE to chatbot",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "requestLocationPush"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "mapAction"
+          ]
+        },
+        "calendarAction": {
+          "title": "Suggested actions for interacting with a calendar event.",
+          "properties": {
+            "calendarAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "createCalendarEvent": {
+                      "type": "object",
+                      "properties": {
+                        "startTime": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "endTime": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "description": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 500
+                        },
+                        "fallbackUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      },
+                      "required": [
+                        "startTime",
+                        "endTime",
+                        "title"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "createCalendarEvent"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "calendarAction"
+          ]
+        },
+        "composeAction": {
+          "title": "Suggested actions for composing draft messages.",
+          "properties": {
+            "composeAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "composeTextMessage": {
+                      "title": "Compose a draft text message.",
+                      "type": "object",
+                      "properties": {
+                        "phoneNumber": {
+                          "type": "string"
+                        },
+                        "text": {
+                          "type": "string",
+                          "maxLength": 100
+                        }
+                      },
+                      "required": [
+                        "phoneNumber",
+                        "text"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "composeTextMessage"
+                  ]
+                },
+                {
+                  "properties": {
+                    "composeRecordingMessage": {
+                      "title": "Compose a draft message with a media recording.",
+                      "type": "object",
+                      "properties": {
+                        "phoneNumber": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "AUDIO",
+                            "VIDEO"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "phoneNumber",
+                        "type"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "composeRecordingMessage"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "composeAction"
+          ]
+        },
+        "deviceAction": {
+          "title": "Suggested actions for interacting with the user's device.",
+          "properties": {
+            "deviceAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "requestDeviceSpecifics": {
+                      "title": "Request specifics about the user's device.",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "requestDeviceSpecifics"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "deviceAction"
+          ]
+        },
+        "settingsAction": {
+          "title": "Suggested actions for interacting with app settings",
+          "properties": {
+            "settingsAction": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "properties": {
+                    "disableAnonymization": {
+                      "title": "Ask the user to disable the anonymization setting.",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "disableAnonymization"
+                  ]
+                },
+                {
+                  "properties": {
+                    "enableDisplayedNotifications": {
+                      "title": "Ask the user to enable sending displayed notifications.",
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "enableDisplayedNotifications"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "settingsAction"
+          ]
+        }
+      }
+    }
+  }
+}

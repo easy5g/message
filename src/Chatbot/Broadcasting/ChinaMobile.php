@@ -8,8 +8,8 @@
 namespace Easy5G\Chatbot\Broadcasting;
 
 
-use Easy5G\Chatbot\Structure\File;
-use Easy5G\Chatbot\Structure\Text;
+use Easy5G\Chatbot\Structure\Message\File;
+use Easy5G\Chatbot\Structure\Message\Text;
 use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Const5G;

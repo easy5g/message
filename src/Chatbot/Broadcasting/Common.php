@@ -9,7 +9,7 @@ namespace Easy5G\Chatbot\Broadcasting;
 
 
 use Easy5G\Chatbot\Application;
-use Easy5G\Chatbot\Structure\Text;
+use Easy5G\Chatbot\Structure\Message\Text;
 use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Support\ResponseCollection;
 use Psr\Http\Message\ResponseInterface;

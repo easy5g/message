@@ -8,10 +8,10 @@
 namespace Easy5G\Chatbot\Broadcasting;
 
 
-use Easy5G\Chatbot\Structure\Card;
-use Easy5G\Chatbot\Structure\File;
 use Easy5G\Chatbot\Structure\Menu;
-use Easy5G\Chatbot\Structure\Text;
+use Easy5G\Chatbot\Structure\Message\Card;
+use Easy5G\Chatbot\Structure\Message\File;
+use Easy5G\Chatbot\Structure\Message\Text;
 use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Exceptions\CardException;
 use Easy5G\Kernel\Exceptions\InvalidConfigException;

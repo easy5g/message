@@ -5,9 +5,11 @@
  * Time: 2:26 下午
  */
 
-namespace Easy5G\Chatbot\Structure;
+namespace Easy5G\Chatbot\Structure\Message;
 
 
+use Easy5G\Chatbot\Structure\Menu;
+use Easy5G\Chatbot\Structure\MessageTrait;
 use Easy5G\Kernel\Contracts\MessageInterface;
 
 class Text implements MessageInterface

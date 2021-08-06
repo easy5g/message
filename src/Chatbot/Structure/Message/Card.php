@@ -5,11 +5,14 @@
  * Time: 2:26 下午
  */
 
-namespace Easy5G\Chatbot\Structure;
+namespace Easy5G\Chatbot\Structure\Message;
 
 
+use Easy5G\Chatbot\Structure\Menu;
+use Easy5G\Chatbot\Structure\MessageTrait;
 use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Exceptions\CardException;
+use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Collection;
 
 class Card implements MessageInterface
@@ -25,13 +28,14 @@ class Card implements MessageInterface
 
     /** @var Menu */
     protected $suggestions;
+
     /** @var MessageInterface */
     public $fallback;
 
-    /** @var Collection */
+    /** @var CardLayout */
     protected $layout;
 
-    /** @var Collection[] */
+    /** @var CardContent[] */
     protected $content;
 
     /***
@@ -51,6 +55,7 @@ class Card implements MessageInterface
 
     /**
      * prepareContentText
+     * @throws CardException
      */
     protected function prepareContentText()
     {
@@ -66,28 +71,17 @@ class Card implements MessageInterface
 
         if ($cardsNum >= 2) {
             foreach ($this->content as $card) {
-                $cardData = $card->all();
-
-                if (isset($cardData['suggestions']) && $cardData['suggestions'] instanceof Menu) {
-                    $cardData['suggestions'] = $cardData['suggestions']->toArray()['suggestions'];
-                }
-
-                $this->contentText['message'][$key]['content'][] = $cardData;
+                $this->contentText['message'][$key]['content'][] = $card->all();
             }
         } else {
-            $cardData = reset($this->content)->all();
-
-            if (isset($cardData['suggestions']) && $cardData['suggestions'] instanceof Menu) {
-                $cardData['suggestions'] = $cardData['suggestions']->toArray()['suggestions'];
-            }
-
-            $this->contentText['message'][$key]['content'] = $cardData;
+            $this->contentText['message'][$key]['content'] = reset($this->content)->all();
         }
     }
 
     /**
      * getToHttpData
      * @return string
+     * @throws CardException
      */
     public function getToHttpData()
     {
@@ -100,6 +94,7 @@ class Card implements MessageInterface
      * getContentType
      * @param null $ISP
      * @return string
+     * @throws CardException|InvalidISPException
      */
     public function getContentType($ISP = null): string
     {
@@ -111,6 +106,7 @@ class Card implements MessageInterface
     /**
      * getUTText
      * @return array
+     * @throws CardException
      */
     public function getUTText(): array
     {
@@ -121,33 +117,64 @@ class Card implements MessageInterface
 
     /**
      * setLayout
-     * @param string|array $key
-     * @param null $value
+     * @param CardLayout $layout
      */
-    public function setLayout($key, $value = null)
+    public function setLayout(CardLayout $layout)
     {
-        if (!isset($this->layout)) {
-            $this->layout = new Collection();
-        }
+        $this->layout = $layout;
+    }
 
+    /**
+     * addLayout
+     * @param string|array $key
+     * @param $value
+     * @return $this
+     * @throws CardException
+     */
+    public function addLayout($key, $value = null)
+    {
         if (is_array($key)) {
             $layout = $key;
-        } else {
+        } elseif (is_string($key)) {
             $layout = [$key => $value];
+        }else{
+            throw new CardException('Key must be an array or string');
+        }
+
+        if (!isset($this->layout)) {
+            $this->layout = new CardLayout();
         }
 
         foreach ($layout as $key => $value) {
             $this->layout->set($key, $value);
         }
+
+        return $this;
     }
 
     /**
      * setContent
-     * @param $key
+     * @param CardContent $content
+     * @param int|null $index
+     */
+    public function setContent(CardContent $content, ?int $index = null)
+    {
+        if ($index === null) {
+            $this->content[] = $content;
+        } else {
+            $this->content[$index] = $content;
+        }
+    }
+
+    /**
+     * addContent
+     * @param string|array $key
      * @param null $value
      * @param int $index
+     * @return Card
+     * @throws CardException
      */
-    public function setContent($key, $value = null, $index = 0)
+    public function addContent($key, $value = null, int $index = 0)
     {
         if (is_array($key)) {
             $card = $key;
@@ -155,8 +182,10 @@ class Card implements MessageInterface
             if (is_numeric($value)) {
                 $index = $value;
             }
-        } else {
+        } elseif (is_string($key)) {
             $card = [$key => $value];
+        }else{
+            throw new CardException('Key must be an array or string');
         }
 
         if (!isset($this->content[$index])) {
@@ -166,6 +195,8 @@ class Card implements MessageInterface
         foreach ($card as $key => $value) {
             $this->content[$index]->set($key, $value);
         }
+
+        return $this;
     }
 
     /**
@@ -221,13 +252,13 @@ class Card implements MessageInterface
             $type = is_numeric(array_key_first($contentArr['content'])) ? 'generalPurposeCardCarousel' : 'generalPurposeCard';
         }
 
-        isset($contentArr['layout']) && $card->setLayout($contentArr['layout']);
+        isset($contentArr['layout']) && $card->addLayout($contentArr['layout']);
 
         if ($type === 'generalPurposeCard') {
-            $card->setContent($contentArr['content']);
+            $card->addContent($contentArr['content']);
         } else {
             foreach ($contentArr['content'] as $index => $content) {
-                $card->setContent($content, $index);
+                $card->addContent($content, $index);
             }
         }
 

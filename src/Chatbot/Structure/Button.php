@@ -22,7 +22,7 @@ class Button extends Collection
     public static function raw($button)
     {
         if (is_string($button)) {
-            $button  = json_decode($button,true);
+            $button = json_decode($button, true);
         }
 
         if (!is_array($button)) {
@@ -34,77 +34,89 @@ class Button extends Collection
 
     /**
      * reply
-     * @param $display
+     * @param string $display
      * @param $return
      * @return Button
      */
-    public static function reply($display, $return)
+    public static function reply(string $display, $return = null)
     {
-        return new self([
+        $reply = [
             'reply' => [
                 'displayText' => $display,
-                'postback' => [
-                    'data' => $return
-                ]
-            ]
-        ]);
+            ],
+        ];
+
+        $return && $reply['reply']['postback']['data'] = $return;
+
+        return new self($reply);
     }
 
     /**
      * action
-     * @param $display
-     * @param $return
-     * @param $actionData
+     * @param string $display
+     * @param array $actionData
+     * @param string|null $return
      * @return Button
      */
-    public static function action($display, $return, $actionData)
+    public static function action(string $display, array $actionData, ?string $return = null)
     {
-        return new self([
+        $action = [
             'action' => $actionData + [
                     'displayText' => $display,
-                    'postback' => [
-                        'data' => $return
-                    ]
                 ]
-        ]);
+        ];
+
+        $return && $action['action']['postback']['data'] = $return;
+
+        return new self($action);
     }
 
     /**
      * url
      * @param $display
-     * @param $return
      * @param string $url
-     * @param string|null $application
+     * @param string $application
+     * @param string|null $return
      * @param string|null $viewMode
      * @param string|null $parameters
      * @return Button
+     * @throws MenuException
      */
-    public static function url($display, $return, string $url, string $application, ?string $viewMode = null, ?string $parameters = null)
+    public static function url($display, string $url, string $application, ?string $return = null, ?string $viewMode = null, ?string $parameters = null)
     {
         $actionData = [
             'url' => $url,
+            'application' => $application
         ];
 
-        $application && $actionData['application'] = $application;
-        $viewMode && $actionData['viewMode'] = $viewMode;
-        $parameters && $actionData['parameters'] = $parameters;
+        if ($application !== 'browser' && $application !== 'webview') {
+            throw new MenuException('Application can only be set to browser or webview');
+        }
 
-        return self::action($display, $return, [
+        if ($application === 'webview') {
+            if (in_array($viewMode, ["full", "half", "tall"])) {
+                $actionData['viewMode'] = $viewMode;
+            }
+
+            $parameters && $actionData['parameters'] = $parameters;
+        }
+
+        return self::action($display, [
             'urlAction' => [
                 'openUrl' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
     /**
      * call
      * @param $display
-     * @param $return
-     * @param $phoneNumber
+     * @param string $phoneNumber
+     * @param string|null $return
      * @param string|null $fallbackUrl
      * @return Button
      */
-    public static function call($display, $return, $phoneNumber, ?string $fallbackUrl = null)
+    public static function call($display, string $phoneNumber, ?string $return = null, ?string $fallbackUrl = null)
     {
         $actionData = [
             'phoneNumber' => $phoneNumber,
@@ -112,22 +124,22 @@ class Button extends Collection
 
         $fallbackUrl && $actionData['fallbackUrl'] = $fallbackUrl;
 
-        return self::action($display, $return, [
+        return self::action($display, [
             'dialerAction' => [
                 'dialPhoneNumber' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
     /**
      * videoCall
      * @param $display
-     * @param $return
      * @param $phoneNumber
+     * @param string|null $return
      * @param string|null $fallbackUrl
      * @return Button
      */
-    public static function videoCall($display, $return, $phoneNumber, ?string $fallbackUrl = null)
+    public static function videoCall($display, $phoneNumber, ?string $return = null, ?string $fallbackUrl = null)
     {
         $actionData = [
             'phoneNumber' => $phoneNumber,
@@ -135,61 +147,86 @@ class Button extends Collection
 
         $fallbackUrl && $actionData['fallbackUrl'] = $fallbackUrl;
 
-        return self::action($display, $return, [
+        return self::action($display, [
             'dialerAction' => [
                 'dialVideoCall' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
     /**
      * showLocation
      * @param $display
-     * @param $return
-     * @param $latitude
-     * @param $longitude
-     * @param string|null $label
+     * @param null $latitude
+     * @param null $longitude
      * @param string|null $query
+     * @param string|null $return
+     * @param string|null $label
      * @param string|null $fallbackUrl
      * @return Button
+     * @throws MenuException
      */
-    public static function showLocation($display, $return, $latitude, $longitude, ?string $label = null, ?string $query = null, ?string $fallbackUrl = null)
+    public static function showLocation($display, $latitude = null, $longitude = null, ?string $query = null, ?string $return = null, ?string $label = null, ?string $fallbackUrl = null)
     {
-        $actionData = [
-            'location' => [
-                'latitude' => $latitude,
-                'longitude' => $longitude,
-            ],
-        ];
+        if ($latitude && $longitude) {
+            if (!is_numeric($latitude) || !is_numeric($longitude)) {
+                throw new MenuException('Latitude and longitude must be numeric');
+            }
+
+            $actionData = [
+                'location' => [
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                ],
+            ];
+        } elseif ($query) {
+            $actionData = [
+                'location' => [
+                    'query' => $query
+                ],
+            ];
+        } else {
+            throw new MenuException('ShowLocation must contain latitude and longitude or query');
+        }
 
         $label && $actionData['location']['label'] = $label;
-        $query && $actionData['location']['query'] = $query;
         $fallbackUrl && $actionData['fallbackUrl'] = $fallbackUrl;
 
-        return self::action($display, $return, [
+        return self::action($display, [
             'mapAction' => [
                 'showLocation' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
-    public static function getLocation($display, $return)
+    /**
+     * getLocation
+     * @param $display
+     * @param $requestLocationPush
+     * @param string|null $return
+     * @return Button
+     */
+    public static function getLocation($display, $requestLocationPush, ?string $return = null)
     {
-        //todo 文档不完善
+        return self::action($display, [
+            'mapAction' => [
+                'requestLocationPush' => $requestLocationPush
+            ]
+        ], $return);
     }
 
     /**
      * createCalendarEvent
      * @param $display
-     * @param $return
      * @param string $startTime
      * @param string $endTime
      * @param string $title
+     * @param string|null $return
      * @param string|null $description
      * @param string|null $fallbackUrl
      * @return Button
      */
-    public static function createCalendarEvent($display, $return, string $startTime, string $endTime, string $title, ?string $description = null, ?string $fallbackUrl = null)
+    public static function createCalendarEvent($display, string $startTime, string $endTime, string $title, ?string $return = null, ?string $description = null, ?string $fallbackUrl = null)
     {
         $actionData = [
             'startTime' => $startTime,
@@ -200,34 +237,77 @@ class Button extends Collection
         $description && $actionData['description'] = $description;
         $fallbackUrl && $actionData['fallbackUrl'] = $fallbackUrl;
 
-        return self::action($display, $return, [
+        return self::action($display, [
             'calendarAction' => [
                 'createCalendarEvent' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
-    public static function sendText($display, $return, $phoneNumber, string $text)
+    /**
+     * sendText
+     * @param $display
+     * @param $phoneNumber
+     * @param string $text
+     * @param string|null $return
+     * @return Button
+     */
+    public static function sendText($display, $phoneNumber, string $text, ?string $return = null)
     {
         $actionData = [
             'phoneNumber' => $phoneNumber,
             'text' => $text,
         ];
 
-        return self::action($display, $return, [
+        return self::action($display, [
             'composeAction' => [
                 'composeTextMessage' => $actionData
             ]
-        ]);
+        ], $return);
     }
 
-    public static function sendAudioOrVideo($display, $return)
+    /**
+     * sendAudioOrVideo
+     * @param $display
+     * @param $phoneNumber
+     * @param string $type
+     * @param string|null $return
+     * @return Button
+     * @throws MenuException
+     */
+    public static function sendAudioOrVideo($display, $phoneNumber, string $type, ?string $return = null)
     {
-        //todo 文档不完善
+        $type = strtoupper($type);
+
+        if (in_array($type, ["AUDIO", "VIDEO"])) {
+            throw new MenuException('Audio type can only be set to audio or video');
+        }
+
+        $actionData = [
+            'phoneNumber' => $phoneNumber,
+            'type' => $type,
+        ];
+
+        return self::action($display, [
+            'composeAction' => [
+                'composeRecordingMessage' => $actionData
+            ]
+        ], $return);
     }
 
-    public static function getTerminalInfo($display, $return)
+    /**
+     * getTerminalInfo
+     * @param $display
+     * @param $requestDeviceSpecifics
+     * @param string|null $return
+     * @return Button
+     */
+    public static function getTerminalInfo($display, $requestDeviceSpecifics, ?string $return = null)
     {
-        //todo 文档不完善
+        return self::action($display, [
+            'deviceAction' => [
+                'requestDeviceSpecifics' => $requestDeviceSpecifics
+            ]
+        ], $return);
     }
 }
