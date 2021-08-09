@@ -22,6 +22,7 @@ class Text implements MessageInterface
 
     /** @var Menu */
     protected $suggestions;
+
     /** @var MessageInterface */
     public $fallback;
 
@@ -39,5 +40,17 @@ class Text implements MessageInterface
     public function getToHttpData()
     {
         return $this->contentText;
+    }
+
+    /**
+     * setText
+     * @param string $text
+     * @return Text
+     */
+    public function setText(string $text)
+    {
+        $this->contentText = $text;
+
+        return $this;
     }
 }

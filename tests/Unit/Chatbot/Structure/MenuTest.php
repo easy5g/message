@@ -10,7 +10,6 @@ namespace Unit\Chatbot\Structure;
 use Easy5G\Chatbot\Structure\Button;
 use Easy5G\Chatbot\Structure\Menu;
 use Easy5G\Factory;
-use Easy5G\Kernel\Factory\ChatbotMenuFactory;
 use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
 

@@ -12,13 +12,11 @@ use Easy5G\Chatbot\Structure\Menu;
 use Easy5G\Chatbot\Structure\MessageTrait;
 use Easy5G\Kernel\Contracts\MessageInterface;
 use Easy5G\Kernel\Exceptions\CardException;
-use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\Support\Collection;
 
 class Card implements MessageInterface
 {
     use MessageTrait {
-        MessageTrait::getContentType as traitGetContentType;
         MessageTrait::getUTText as traitGetUTText;
     }
 
@@ -88,19 +86,6 @@ class Card implements MessageInterface
         $this->prepareContentText();
 
         return json_encode($this->contentText, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    }
-
-    /**
-     * getContentType
-     * @param null $ISP
-     * @return string
-     * @throws CardException|InvalidISPException
-     */
-    public function getContentType($ISP = null): string
-    {
-        $this->prepareContentText();
-
-        return $this->traitGetContentType($ISP);
     }
 
     /**

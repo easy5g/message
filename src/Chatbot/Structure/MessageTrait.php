@@ -34,7 +34,7 @@ trait MessageTrait
         if ($ISP === Const5G::CM) {
             return 'multipart/mixed;boundary="next"';
         } else {
-            return $this->contentText;
+            return $this->contentType;
         }
     }
 
