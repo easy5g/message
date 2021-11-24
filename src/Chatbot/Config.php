@@ -38,35 +38,4 @@ class Config extends Repository
             'chatbotId' => 'string'
         ]
     ];
-
-    /**
-     * checkConfig 校验配置
-     * @throws InvalidConfigException
-     */
-    public function checkConfig()
-    {
-        parent::checkConfig();
-
-        foreach ($this->config as $key => $value) {
-            if (isset($this->spBaseConfigField[$key])) {
-                foreach ($this->spBaseConfigField[$key] as $field => $type) {
-                    if (!isset($value[$field])) {
-                        throw new InvalidConfigException('Missing configuration');
-                    }
-
-                    if ($type === 'string' ? !is_string($value[$field]) : !is_numeric($value[$field])) {
-                        throw new InvalidConfigException('Invalid ' . $field . ' configuration');
-                    }
-                }
-
-                $uri = parse_url($value['serverRoot']);
-
-                if ($uri === false || empty($uri['host']) || empty($uri['scheme'])) {
-                    throw new InvalidConfigException('The URL needs to have scheme and host');
-                }
-                
-                $this->config[$key]['url'] = $uri['scheme'] . '://' . $uri['host'] . (empty($uri['port']) ? '' : ':' . $uri['port']);
-            }
-        }
-    }
 }
