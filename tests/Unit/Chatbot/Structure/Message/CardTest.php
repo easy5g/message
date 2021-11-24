@@ -113,17 +113,17 @@ class CardTest extends TestCase
 
     public function testCardContent()
     {
-        $content = new CardContent();
-
-        $media = [
-            'mediaUrl' => 'http://127.0.0.1/test',
-            'mediaContentType' => 'mp4',
-            'mediaFileSize' => 1024,
-            'height' => 'SHORT_HEIGHT'
-        ];
-
-        $content->setMediaUrl('http://127.0.0.1/test')
-        ->setMediaContentType();
+//        $content = new CardContent();
+//
+//        $media = [
+//            'mediaUrl' => 'http://127.0.0.1/test',
+//            'mediaContentType' => 'mp4',
+//            'mediaFileSize' => 1024,
+//            'height' => 'SHORT_HEIGHT'
+//        ];
+//
+//        $content->setMediaUrl('http://127.0.0.1/test')
+//        ->setMediaContentType();
     }
 
     public function testAddContent()

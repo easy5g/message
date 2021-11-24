@@ -14,6 +14,8 @@ use Easy5G\Kernel\Support\Const5G;
 
 class Config extends Repository
 {
+    const TYPE = 'csp';
+
     public $spBaseConfigField = [
         Const5G::CM => [
             'cspid' => 'string',

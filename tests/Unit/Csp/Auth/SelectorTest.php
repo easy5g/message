@@ -19,7 +19,7 @@ class SelectorTest extends TestCase
     {
         $this->expectException(BadRequestException::class);
 
-        $config = [Const5G::CT => $GLOBALS['csp.config'][Const5G::CT]];
+        $config['csp'] = [Const5G::CT => $GLOBALS['config']['csp'][Const5G::CT]];
 
         Factory::Csp($config, false)->access_token->getToken(true, null, 'http://127.0.0.1:9999/test');
     }
@@ -27,8 +27,10 @@ class SelectorTest extends TestCase
     public function testGetToken()
     {
         $config = [
-            Const5G::CT => $GLOBALS['csp.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['csp.config'][Const5G::CM]
+            'csp' => [
+                Const5G::CT => $GLOBALS['config']['csp'][Const5G::CT],
+                Const5G::CM => $GLOBALS['config']['csp'][Const5G::CM]
+            ]
         ];
 
         $app = Factory::Csp($config, false);
@@ -49,7 +51,7 @@ class SelectorTest extends TestCase
 
         $this->assertSame($mockData['data']['accessToken'], $app->access_token->getToken(true, Const5G::CT));
 
-        $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['cspid'] . ':' . hash('sha256', $config[Const5G::CM]['cspToken'] . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
+        $exceptAccessToken = 'Basic ' . base64_encode($config['csp'][Const5G::CM]['cspid'] . ':' . hash('sha256', $config['csp'][Const5G::CM]['cspToken'] . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
 
         $this->assertSame($exceptAccessToken, $app->access_token->getToken(true, Const5G::CM));
     }

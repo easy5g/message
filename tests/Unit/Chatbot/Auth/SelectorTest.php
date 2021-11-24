@@ -20,16 +20,16 @@ class SelectorTest extends TestCase
     {
         $this->expectException(BadRequestException::class);
 
-        $config = [Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]];
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
 
         Factory::Chatbot($config, false)->access_token->getToken(true, null, 'http://127.0.0.1:9999/test');
     }
 
     public function testGetToken()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -49,15 +49,15 @@ class SelectorTest extends TestCase
 
         $this->assertSame($mockData['accessToken'], $app->access_token->getToken(true, Const5G::CT));
 
-        $exceptAccessToken = 'Basic ' . base64_encode($config[Const5G::CM]['appId'] . ':' . hash('sha256', hash('sha256', $config[Const5G::CM]['password']) . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
+        $exceptAccessToken = 'Basic ' . base64_encode($config['chatbot'][Const5G::CM]['appId'] . ':' . hash('sha256', hash('sha256', $config['chatbot'][Const5G::CM]['password']) . gmdate('D, d M Y H:i:s', time()) . ' GMT'));
 
         $this->assertSame($exceptAccessToken, $app->access_token->getToken(true, Const5G::CM));
     }
 
     public function testNotify()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
         ];
 
         $app = Factory::Chatbot($config, false);

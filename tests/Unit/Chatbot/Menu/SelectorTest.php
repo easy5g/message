@@ -20,9 +20,9 @@ class SelectorTest extends TestCase
 
     public function testList()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -44,9 +44,9 @@ class SelectorTest extends TestCase
 
     public function testCurrent()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -68,9 +68,9 @@ class SelectorTest extends TestCase
 
     public function testCreate()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -100,8 +100,8 @@ class SelectorTest extends TestCase
 
     public function testCreateErr()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
         ];
 
         $app = Factory::Chatbot($config, false);

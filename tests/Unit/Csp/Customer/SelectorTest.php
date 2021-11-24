@@ -19,7 +19,9 @@ class SelectorTest extends TestCase
 
     public function testUploadImage()
     {
-        $app = Factory::Csp([Const5G::CT => $GLOBALS['csp.config'][Const5G::CT]], false);
+        $config['csp'] = [Const5G::CT => $GLOBALS['config']['csp'][Const5G::CT]];
+
+        $app = Factory::Csp($config, false);
 
         $stub = $this->createMock(HttpClient::class);
 
@@ -51,7 +53,9 @@ class SelectorTest extends TestCase
 
     public function testDownload()
     {
-        $app = Factory::Csp([Const5G::CT => $GLOBALS['csp.config'][Const5G::CT]], false);
+        $config['csp'] = [Const5G::CT => $GLOBALS['config']['csp'][Const5G::CT]];
+
+        $app = Factory::Csp($config, false);
 
         $stub = $this->createMock(HttpClient::class);
 

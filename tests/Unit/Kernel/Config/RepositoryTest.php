@@ -8,6 +8,7 @@
 namespace Unit\Kernel\Config;
 
 
+use Easy5G\Chatbot\Config;
 use Easy5G\Kernel\Config\Repository;
 use Easy5G\Kernel\Support\Const5G;
 use PHPUnit\Framework\TestCase;
@@ -18,10 +19,10 @@ class RepositoryTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $config = $GLOBALS['chatbot.config'];
-
-        self::$config = new Repository([
-            Const5G::CM => $config[Const5G::CM]
+        self::$config = new Config([
+            'chatbot' => [
+                Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
+            ]
         ]);
     }
 
@@ -36,13 +37,17 @@ class RepositoryTest extends TestCase
      */
     public function testSetGet()
     {
-        $this->assertSame($GLOBALS['chatbot.config'][Const5G::CM]['appId'], self::$config->get(Const5G::CM . '.appId'));
+        $this->assertSame($GLOBALS['config']['chatbot'][Const5G::CM]['appId'], self::$config->get(Const5G::CM . '.appId'));
 
         $this->assertNull(self::$config->get('test.test'));
         $this->assertSame('testDefault', self::$config->get(Const5G::CU, 'testDefault'));
 
         self::$config->set(Const5G::CU, [
-            'appId' => 'testAppId2'
+            'appId' => 'testAppId2',
+            'appKey' => 'string',
+            'serverRoot' => 'http://127.0.0.1/tests',
+            'apiVersion' => 'string',
+            'chatbotId' => 'string'
         ]);
 
         self::$config->set(Const5G::CU . '.appKey', 'testAppKey2');
@@ -50,6 +55,10 @@ class RepositoryTest extends TestCase
         $this->assertSame([
             'appId' => 'testAppId2',
             'appKey' => 'testAppKey2',
+            'serverRoot' => 'http://127.0.0.1/tests',
+            'apiVersion' => 'string',
+            'chatbotId' => 'string',
+            'url' => 'http://127.0.0.1'
         ], self::$config->get(Const5G::CU));
     }
 

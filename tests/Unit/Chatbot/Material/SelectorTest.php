@@ -21,7 +21,9 @@ class SelectorTest extends TestCase
 {
     public function testDownload()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $ct = Factory::Chatbot($config, false);
 
         $stubCt = $this->createMock(HttpClient::class);
 
@@ -73,14 +75,16 @@ class SelectorTest extends TestCase
 
         $this->assertSame("can't find the file", $collect->getMessage());
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
+        $config['chatbot'] = [Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]];
+
+        $cm = Factory::Chatbot($config, false);
 
         $stubCm = $this->createMock(HttpClient::class);
 
         $stubCm->method('post')->willReturn(new Response(200, [], $content))->with(
             $this->stringContains('README.md'),
             $this->callback(function ($options) {
-                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
+                return $options['headers']['User-Agent'] === $GLOBALS['config']['chatbot'][Const5G::CM]['chatbotURI'];
             })
         );
 
@@ -101,7 +105,7 @@ class SelectorTest extends TestCase
         $stubCm->method('post')->willReturn(new Response(404, [], ''))->with(
             $this->stringContains('README.md'),
             $this->callback(function ($options) {
-                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
+                return $options['headers']['User-Agent'] === $GLOBALS['config']['chatbot'][Const5G::CM]['chatbotURI'];
             })
         );
 
@@ -116,7 +120,9 @@ class SelectorTest extends TestCase
 
     public function testDelete()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $ct = Factory::Chatbot($config, false);
 
         $stubCt = $this->createMock(HttpClient::class);
 
@@ -145,7 +151,9 @@ class SelectorTest extends TestCase
 
         $this->assertSame('perm', $collect->get('deleteMode'));
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
+        $config['chatbot'] = [Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]];
+
+        $cm = Factory::Chatbot($config, false);
 
         $stuCm = $this->createMock(HttpClient::class);
 
@@ -153,7 +161,7 @@ class SelectorTest extends TestCase
             $this->anything(),
             $this->callback(function ($options) use ($media) {
                 return $options['headers']['tid'] === $media &&
-                    $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI'];
+                    $options['headers']['User-Agent'] === $GLOBALS['config']['chatbot'][Const5G::CM]['chatbotURI'];
             })
         );
 
@@ -170,7 +178,9 @@ class SelectorTest extends TestCase
 
     public function testUpload()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $ct = Factory::Chatbot($config, false);
 
         $stub = $this->createMock(HttpClient::class);
 
@@ -221,7 +231,9 @@ class SelectorTest extends TestCase
 
         $this->assertSame('http://124.127.121.100/temp/src/2020062217asdfkjaoskd/836ee/view/37,3c3504f6e4cc6c5274f0.jpg', $collect->get('fileInfo.0.url'));
 
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
+        $config['chatbot'] = [Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]];
+
+        $cm = Factory::Chatbot($config, false);
 
         $stub = $this->createMock(HttpClient::class);
 
@@ -238,7 +250,7 @@ class SelectorTest extends TestCase
         }))->with(
             $this->anything(),
             $this->callback(function ($options) use ($cm) {
-                return $options['headers']['User-Agent'] === $GLOBALS['chatbot.config'][Const5G::CM]['chatbotURI']
+                return $options['headers']['User-Agent'] === $GLOBALS['config']['chatbot'][Const5G::CM]['chatbotURI']
                     && $options['headers']['Authorization'] === $cm->access_token->getToken()
                     && $options['multipart']['0']['name'] === 'File';
             })
@@ -279,7 +291,9 @@ class SelectorTest extends TestCase
 
     public function testNotify()
     {
-        $cm = Factory::Chatbot([Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]], false);
+        $config['chatbot'] = [Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]];
+
+        $cm = Factory::Chatbot($config, false);
 
         $cmXml = '<?xml version="1.0" encoding="UTF-8"?>
 <file xmlns="urn:gsma:params:xml:ns:rcs:rcs:fthttp" xmlns:e="urn:gsma:params :xml:ns:rcs:rcs:up:fthttpext">

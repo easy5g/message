@@ -32,7 +32,15 @@ class Repository implements ConfigInterface, ArrayAccess
      */
     public function __construct(array $config = [])
     {
-        $this->config = $config;
+        $subConfig = $config[static::TYPE] ?? [];
+
+        if (empty($subConfig)) {
+            throw new InvalidConfigException('Missing ' . static::TYPE . ' config');
+        }
+
+        unset($config[static::TYPE]);
+
+        $this->config = array_merge($subConfig, $config);
 
         $this->statisticsServiceProviders();
 
@@ -92,7 +100,7 @@ class Repository implements ConfigInterface, ArrayAccess
         }
 
         foreach ($this->legalServiceProviders as $sp) {
-            if (strpos($key,$sp) === 0) {
+            if (strpos($key, $sp) === 0) {
                 $this->statisticsServiceProviders();
 
                 $this->checkConfig();

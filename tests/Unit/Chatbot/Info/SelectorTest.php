@@ -11,7 +11,6 @@ use Easy5G\Factory;
 use Easy5G\Kernel\Exceptions\InvalidISPException;
 use Easy5G\Kernel\HttpClient;
 use Easy5G\Kernel\Support\Const5G;
-use Easy5G\Chatbot\Structure\Info;
 use Easy5G\Kernel\Support\ResponseCollection;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -21,8 +20,10 @@ class SelectorTest extends TestCase
     public function testUpdate()
     {
         $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+            'chatbot'=>[
+                Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+                Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
+            ]
         ];
 
         $app = Factory::Chatbot($config, false);
@@ -64,9 +65,9 @@ class SelectorTest extends TestCase
 
     public function testAll()
     {
-        $config = [
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM]
+        $config['chatbot'] = [
+            Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+            Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM]
         ];
 
         $mockData = '{"accessNo":"10690000","domain":"botplatform.rcs.domain.cn","serviceName":"xxxx","serviceIcon":"https://xxxx/icon.png","TCPage":"https://xxxx.com/","SMSNumber":"10690000","verified":false,"authName":"","authExpires":"","authOrg":"","status":2,"criticalChatbot":false,"url":"https://xxxx.com/","version":2,"provider":"xxxx","category":["education"],"serviceDescription":"","longitude":50.7311865,"latitude":7.0914591,"callBackNumber":"12345678912","themeColour":"#000000","serviceWebsite":"https://xxx.com","emailAddress":"example@test.com","backgroundImage":"https://xxxx/xx.png","address":"","menu":[],"cssStyle":""}';

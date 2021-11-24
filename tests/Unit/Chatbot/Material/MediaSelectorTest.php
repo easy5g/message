@@ -20,7 +20,9 @@ class MediaSelectorTest extends TestCase
 {
     public function testUpload()
     {
-        $ct = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]], false);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $ct = Factory::Chatbot($config, false);
 
         $stub = $this->createMock(HttpClient::class);
 

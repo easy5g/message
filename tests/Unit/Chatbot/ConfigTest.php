@@ -19,8 +19,10 @@ class ConfigTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         self::$config = new Config([
-            Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT],
-            Const5G::CM => $GLOBALS['chatbot.config'][Const5G::CM],
+            'chatbot' => [
+                Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT],
+                Const5G::CM => $GLOBALS['config']['chatbot'][Const5G::CM],
+            ]
         ]);
     }
 

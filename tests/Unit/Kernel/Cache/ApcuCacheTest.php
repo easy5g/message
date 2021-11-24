@@ -22,7 +22,7 @@ class ApcuCacheTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        $config = [Const5G::CU => $GLOBALS['chatbot.config'][Const5G::CU]];
+        $config['chatbot'] = [Const5G::CU => $GLOBALS['config']['chatbot'][Const5G::CU]];
 
         $config['cache'] = [
             'default' => 'dev',

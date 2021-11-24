@@ -19,7 +19,9 @@ class MenuTest extends TestCase
     {
         $menu = '{"menu":{"entries":[{"reply":{"displayText":"reply1","postback":{"data":"set_by_chatbot_reply1"}}},{"menu":{"displayText":"SubmenuL1","entries":[{"reply":{"displayText":"reply2","postback":{"data":"set_by_chatbot_reply2"}}},{"action":{"dialerAction":{"dialPhoneNumber":{"phoneNumber":"+8617928222350"}},"displayText":"Call a phone number","postback":{"data":"set_by_chatbot_dial_menu_phone_number"}}}]}}]}}';
 
-        $app = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]]);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $app = Factory::Chatbot($config);
 
         $this->assertSame($menu, $app->chatbotMenuFactory->create($menu)->toJson());
 
@@ -34,7 +36,9 @@ class MenuTest extends TestCase
 
         $menu = '{"menu":{"entries":[' . $button1 . ',{"menu":{"displayText":"' . $display . '","entries":[' . $button2 . ',' . $button3 . ']}}]}}';
 
-        $app = Factory::Chatbot([Const5G::CT => $GLOBALS['chatbot.config'][Const5G::CT]]);
+        $config['chatbot'] = [Const5G::CT => $GLOBALS['config']['chatbot'][Const5G::CT]];
+
+        $app = Factory::Chatbot($config);
 
         /** @var Menu $menuInstance */
         $menuInstance = $app->chatbotMenuFactory->create();
