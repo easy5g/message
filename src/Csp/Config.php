@@ -14,7 +14,7 @@ use Easy5G\Kernel\Support\Const5G;
 
 class Config extends Repository
 {
-    const TYPE = 'csp';
+    const TYPE = Const5G::CONFIG_TYPE_CSP;
 
     public $spBaseConfigField = [
         Const5G::CM => [

@@ -14,7 +14,7 @@ use Easy5G\Kernel\Support\Const5G;
 
 class Config extends Repository
 {
-    const TYPE = 'chatbot';
+    const TYPE = Const5G::CONFIG_TYPE_CHATBOT;
 
     public $spBaseConfigField = [
         Const5G::CM => [

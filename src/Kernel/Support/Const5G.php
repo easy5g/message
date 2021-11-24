@@ -10,10 +10,16 @@ namespace Easy5G\Kernel\Support;
 
 class Const5G
 {
-    /** @var int 中国移动 */
+    /** @var string 中国移动 */
     const CM = 'CM';
-    /** @var int 中国联通 */
+    /** @var string 中国联通 */
     const CU = 'CU';
-    /** @var int 中国电信 */
+    /** @var string 中国电信 */
     const CT = 'CT';
+
+    /** @var string 配置文件key */
+    const CONFIG_TYPE_CHATBOT = 'chatbot';
+
+    /** @var string 配置文件key */
+    const CONFIG_TYPE_CSP = 'csp';
 }
