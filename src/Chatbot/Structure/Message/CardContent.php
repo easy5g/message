@@ -19,8 +19,38 @@ use Easy5G\Kernel\Support\Collection;
  * @property $description
  * @property Menu $suggestions
  */
-class CardContent extends Collection
+class CardContent
 {
+    /**
+     * @var Collection
+     */
+    protected $card;
+
+    public function __construct(array $card = [])
+    {
+        $this->card = new Collection($card);
+    }
+
+    /**
+     * __set
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $this->card->set(...func_get_args());
+    }
+
+    /**
+     * __get
+     * @param $name
+     * @return mixed|null
+     */
+    public function __get($name)
+    {
+        return $this->card->get($name);
+    }
+
     /**
      * set
      * @param $key
@@ -34,7 +64,7 @@ class CardContent extends Collection
             $key = explode('.', $key, 2)[1];
         }
 
-        return $this->call($key,$value);
+        return $this->call($key, $value);
     }
 
     /**
@@ -63,7 +93,7 @@ class CardContent extends Collection
      * @return CardContent
      * @throws CardException
      */
-    public function call($name, $value)
+    protected function call($name, $value)
     {
         $callbackName = 'set' . ucfirst($name);
 
@@ -81,7 +111,7 @@ class CardContent extends Collection
      */
     public function setMediaUrl(string $url)
     {
-        parent::set('media.mediaUrl', $url);
+        $this->card->set('media.mediaUrl', $url);
 
         return $this;
     }
@@ -93,19 +123,19 @@ class CardContent extends Collection
      */
     public function setMediaContentType(string $type)
     {
-        parent::set('media.mediaContentType', $type);
+        $this->card->set('media.mediaContentType', $type);
 
         return $this;
     }
 
     /**
      * setMediaFileSize
-     * @param int $size
+     * @param $size
      * @return CardContent
      */
-    public function setMediaFileSize(int $size)
+    public function setMediaFileSize($size)
     {
-        parent::set('media.mediaFileSize', $size);
+        $this->card->set('media.mediaFileSize', (int)$size);
 
         return $this;
     }
@@ -124,7 +154,7 @@ class CardContent extends Collection
             throw new CardException('media height can only be set to short_height,medium_height or tall_height');
         }
 
-        parent::set('media.height', $height);
+        $this->card->set('media.height', $height);
 
         return $this;
     }
@@ -136,7 +166,7 @@ class CardContent extends Collection
      */
     public function setThumbnailUrl(string $url)
     {
-        parent::set('media.thumbnailUrl', $url);
+        $this->card->set('media.thumbnailUrl', $url);
 
         return $this;
     }
@@ -148,19 +178,19 @@ class CardContent extends Collection
      */
     public function setThumbnailContentType(string $type)
     {
-        parent::set('media.thumbnailContentType', $type);
+        $this->card->set('media.thumbnailContentType', $type);
 
         return $this;
     }
 
     /**
      * setThumbnailFileSize
-     * @param int $size
+     * @param $size
      * @return CardContent
      */
-    public function setThumbnailFileSize(int $size)
+    public function setThumbnailFileSize($size)
     {
-        parent::set('media.thumbnailFileSize', $size);
+        $this->card->set('media.thumbnailFileSize', (int)$size);
 
         return $this;
     }
@@ -168,11 +198,11 @@ class CardContent extends Collection
     /**
      * setContentDescription
      * @param string $contentDescription
-     * @return $this
+     * @return CardContent
      */
     public function setContentDescription(string $contentDescription)
     {
-        parent::set('media.contentDescription', $contentDescription);
+        $this->card->set('media.contentDescription', $contentDescription);
 
         return $this;
     }
@@ -180,11 +210,11 @@ class CardContent extends Collection
     /**
      * setTitle
      * @param string $title
-     * @return $this
+     * @return CardContent
      */
     public function setTitle(string $title)
     {
-        parent::set('title', $title);
+        $this->card->set('title', $title);
 
         return $this;
     }
@@ -192,11 +222,11 @@ class CardContent extends Collection
     /**
      * setDescription
      * @param string $description
-     * @return $this
+     * @return CardContent
      */
     public function setDescription(string $description)
     {
-        parent::set('description', $description);
+        $this->card->set('description', $description);
 
         return $this;
     }
@@ -204,11 +234,11 @@ class CardContent extends Collection
     /**
      * setSuggestions
      * @param Menu $suggestions
-     * @return $this
+     * @return CardContent
      */
     public function setSuggestions(Menu $suggestions)
     {
-        parent::set('suggestions', $suggestions);
+        $this->card->set('suggestions', $suggestions);
 
         return $this;
     }
@@ -221,49 +251,49 @@ class CardContent extends Collection
     public function all()
     {
         if (
-            !$this->has('media') &&
-            !$this->has('title') &&
-            !$this->has('description')
+            !$this->card->has('media') &&
+            !$this->card->has('title') &&
+            !$this->card->has('description')
         ) {
             throw new CardException('Media, title, description must have at least one item');
         }
 
-        if ($this->has('media')) {
-            if (!$this->has('media.mediaUrl')) {
+        if ($this->card->has('media')) {
+            if (!$this->card->has('media.mediaUrl')) {
                 throw new CardException('Media url must fill in');
             }
 
-            if (!$this->has('media.mediaContentType')) {
+            if (!$this->card->has('media.mediaContentType')) {
                 throw new CardException('Media content type must fill in');
             }
 
-            if (!$this->has('media.mediaFileSize')) {
+            if (!$this->card->has('media.mediaFileSize')) {
                 throw new CardException('Media file size must fill in');
             }
 
-            if (!$this->has('media.height')) {
+            if (!$this->card->has('media.height')) {
                 throw new CardException('Height must fill in');
             }
 
-            if ($this->has('media.thumbnailUrl')) {
-                if (!$this->has('media.thumbnailContentType')) {
+            if ($this->card->has('media.thumbnailUrl')) {
+                if (!$this->card->has('media.thumbnailContentType')) {
                     throw new CardException('When thumbnail url exists, thumbnail content type must be filled in');
                 }
 
-                if (!$this->has('media.thumbnailFileSize')) {
+                if (!$this->card->has('media.thumbnailFileSize')) {
                     throw new CardException('When thumbnail url exists, thumbnail file size must be filled in');
                 }
             } else {
-                $this->forget('media.thumbnailContentType');
+                $this->card->forget('media.thumbnailContentType');
 
-                $this->forget('media.thumbnailFileSize');
+                $this->card->forget('media.thumbnailFileSize');
             }
         }
 
-        $cardContent = parent::all();
+        $cardContent = $this->card->all();
 
         if (isset($cardContent['suggestions'])) {
-            $cardContent['suggestions'] = $this->suggestions->toArray();
+            $cardContent['suggestions'] = $cardContent['suggestions']->toArray()['suggestions'];
         }
 
         return $cardContent;

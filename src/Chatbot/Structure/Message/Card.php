@@ -174,7 +174,7 @@ class Card implements MessageInterface
         }
 
         if (!isset($this->content[$index])) {
-            $this->content[$index] = new Collection();
+            $this->content[$index] = new CardContent();
         }
 
         foreach ($card as $key => $value) {
