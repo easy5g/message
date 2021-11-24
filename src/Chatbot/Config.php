@@ -16,7 +16,7 @@ class Config extends Repository
 {
     const TYPE = Const5G::CONFIG_TYPE_CHATBOT;
 
-    public $spBaseConfigField = [
+    protected $spBaseConfigField = [
         Const5G::CM => [
             'appId' => 'string',
             'password' => 'string',

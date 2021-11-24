@@ -18,6 +18,7 @@ class Repository implements ConfigInterface, ArrayAccess
 {
     protected $config = [];
     protected $serviceProviders = [];
+    protected $spBaseConfigField = [];
     protected $serviceProvidersNum = 0;
     protected $legalServiceProviders = [
         Const5G::CM => Const5G::CM,
@@ -112,14 +113,11 @@ class Repository implements ConfigInterface, ArrayAccess
      * set 设置配置
      * @param string $key
      * @param null $value
+     * @throws InvalidConfigException
      */
     public function set(string $key, $value = null)
     {
-        $keys = is_array($key) ? $key : [$key => $value];
-
-        foreach ($keys as $key => $value) {
-            Arr::set($this->config, $key, $value);
-        }
+        Arr::set($this->config, $key, $value);
 
         foreach ($this->legalServiceProviders as $sp) {
             if (strpos($key, $sp) === 0) {
@@ -140,11 +138,22 @@ class Repository implements ConfigInterface, ArrayAccess
         return $this->get($key);
     }
 
+    /**
+     * offsetSet
+     * @param mixed $key
+     * @param mixed $value
+     * @throws InvalidConfigException
+     */
     public function offsetSet($key, $value)
     {
         $this->set($key, $value);
     }
 
+    /**
+     * offsetUnset
+     * @param mixed $key
+     * @throws InvalidConfigException
+     */
     public function offsetUnset($key)
     {
         $this->set($key, null);
