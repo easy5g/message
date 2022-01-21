@@ -18,8 +18,8 @@ class Const5G
     const CT = 'CT';
 
     /** @var string 配置文件key */
-    const CONFIG_TYPE_CHATBOT = 'chatbot';
+    const CHATBOT_CONFIG = 'chatbot';
 
     /** @var string 配置文件key */
-    const CONFIG_TYPE_CSP = 'csp';
+    const CSP_CONFIG = 'csp';
 }

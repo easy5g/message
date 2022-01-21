@@ -9,12 +9,11 @@ namespace Easy5G\Chatbot;
 
 
 use Easy5G\Kernel\Config\Repository;
-use Easy5G\Kernel\Exceptions\InvalidConfigException;
 use Easy5G\Kernel\Support\Const5G;
 
 class Config extends Repository
 {
-    const TYPE = Const5G::CONFIG_TYPE_CHATBOT;
+    const TYPE = Const5G::CHATBOT_CONFIG;
 
     protected $spBaseConfigField = [
         Const5G::CM => [
